@@ -1,0 +1,46 @@
+:root {
+  /* Core Aerospace Color Palette */
+  --space-bg: #08090d;
+  --space-surface: #10121a;
+  --space-surface-elevated: #161926;
+  --space-surface-hover: #1c2032;
+
+  /* Typography Colors */
+  --text-primary: #f5f7fa;
+  --text-secondary: #949cae;
+  --text-muted: #5e6678;
+  --text-inverse: #08090d;
+
+  /* Atmospheric Accents */
+  --accent: #66e6ff;            /* Cyan / Telemetry */
+  --accent-glow: rgba(102, 230, 255, 0.4);
+  --accent-secondary: #8b7cff;  /* Deep Nebula Violet */
+  --accent-secondary-glow: rgba(139, 124, 255, 0.4);
+  --accent-status: #00f2a9;     /* Systems nominal green */
+
+  /* Glassmorphism & Borders */
+  --glass-bg: rgba(16, 18, 26, 0.65);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.025);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(102, 230, 255, 0.35);
+  --glass-blur: 16px;
+  --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+
+  /* Layout & Sizing */
+  --container-max: 1400px;
+  --header-height-expanded: 80px;
+  --header-height-condensed: 56px;
+  
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --ease-aerospace: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.2s var(--ease-aerospace);
+  --transition-normal: 0.35s var(--ease-aerospace);
+  --transition-slow: 0.7s var(--ease-aerospace);
+}
