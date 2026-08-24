@@ -7,6 +7,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [hoveredSection, setHoveredSection] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -17,14 +18,14 @@ export default function Navbar() {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
 
-          // Stable threshold
-          if (scrollY > 50) {
+          // Asymmetric hysteresis threshold for smooth morphing
+          if (scrollY > 55) {
             setIsScrolled(true);
           } else if (scrollY < 15) {
             setIsScrolled(false);
           }
 
-          // Track active section without triggering layout changes
+          // Track active section
           const sections = ['home', 'mission', 'projects', 'team', 'insights', 'sponsors'];
           for (const sectionId of sections) {
             const el = document.getElementById(sectionId);
@@ -75,7 +76,7 @@ export default function Navbar() {
           zIndex: 1000,
           pointerEvents: 'none',
           padding: isScrolled ? '0.75rem 1rem' : '1.25rem 1.5rem',
-          transition: 'padding 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'padding 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         <div
@@ -88,8 +89,23 @@ export default function Navbar() {
             minHeight: '48px',
           }}
         >
-          {/* 1. Top Unified Glass Background Bar (Fades out seamlessly on scroll) */}
-          <div
+          {/* 1. Dynamic Morphing Top Glass Background Bar
+              - Expanded & visible at the top
+              - Smoothly scales down and dissolves on scroll */}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: isScrolled ? 0 : 1,
+              scaleX: isScrolled ? 0.85 : 1,
+              scaleY: isScrolled ? 0.75 : 1,
+              y: isScrolled ? -8 : 0,
+            }}
+            transition={{
+              type: 'spring',
+              stiffness: 300,
+              damping: 26,
+              mass: 0.8,
+            }}
             style={{
               position: 'absolute',
               top: 0,
@@ -97,31 +113,31 @@ export default function Navbar() {
               right: 'clamp(1rem, 4vw, 2.5rem)',
               bottom: 0,
               background: 'rgba(10, 12, 18, 0.75)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.09)',
+              backdropFilter: 'blur(24px)',
+              WebkitBackdropFilter: 'blur(24px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: 'var(--radius-pill)',
-              boxShadow: '0 12px 35px rgba(0, 0, 0, 0.45)',
-              opacity: isScrolled ? 0 : 1,
-              transform: isScrolled ? 'scale(0.98)' : 'scale(1)',
-              transition: 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(102, 230, 255, 0.06)',
               pointerEvents: 'none',
               zIndex: 0,
             }}
             aria-hidden="true"
           />
 
-          {/* 2. Left Brand Logo (Fades out softly without shifting center buttons) */}
-          <div
+          {/* 2. Brand Anchor (Left) */}
+          <motion.div
+            animate={{
+              opacity: isScrolled ? 0 : 1,
+              x: isScrolled ? -15 : 0,
+              scale: isScrolled ? 0.92 : 1,
+            }}
+            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             style={{
               position: 'absolute',
               left: 'clamp(1.5rem, 5vw, 3.5rem)',
               display: 'flex',
               alignItems: 'center',
-              opacity: isScrolled ? 0 : 1,
-              transform: isScrolled ? 'translateY(-6px) scale(0.95)' : 'translateY(0) scale(1)',
               pointerEvents: isScrolled ? 'none' : 'auto',
-              transition: 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
               zIndex: 2,
             }}
             className="brand-anchor"
@@ -136,28 +152,30 @@ export default function Navbar() {
                 color: 'var(--text-primary)',
               }}
             >
-              <div
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 8 }}
+                whileTap={{ scale: 0.92 }}
                 style={{
-                  width: '34px',
-                  height: '34px',
+                  width: '36px',
+                  height: '36px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(102, 230, 255, 0.2), rgba(139, 124, 255, 0.2))',
-                  border: '1px solid rgba(102, 230, 255, 0.4)',
+                  background: 'linear-gradient(135deg, rgba(102, 230, 255, 0.25), rgba(139, 124, 255, 0.25))',
+                  border: '1px solid rgba(102, 230, 255, 0.45)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'var(--accent)',
-                  boxShadow: '0 0 15px rgba(102, 230, 255, 0.2)',
+                  boxShadow: '0 0 16px rgba(102, 230, 255, 0.25)',
                 }}
               >
-                <Rocket size={17} />
-              </div>
+                <Rocket size={18} />
+              </motion.div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 800,
-                    fontSize: '1.1rem',
+                    fontSize: '1.15rem',
                     letterSpacing: '-0.02em',
                     lineHeight: 1.1,
                   }}
@@ -167,97 +185,101 @@ export default function Navbar() {
                 <span
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '0.6rem',
+                    fontSize: '0.62rem',
                     color: 'var(--accent)',
-                    letterSpacing: '0.08em',
+                    letterSpacing: '0.1em',
                   }}
                 >
                   SVPM COE BARAMATI
                 </span>
               </div>
             </Link>
-          </div>
+          </motion.div>
 
-          {/* 3. Center Floating Buttons Track (Permanently Centered - ZERO Layout Thrashing) */}
-          <div
+          {/* 3. Center Navigation Track with Highly Visible Sliding Capsule & Morphing Buttons */}
+          <motion.div
+            layout
+            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             style={{
               position: 'relative',
               zIndex: 2,
               pointerEvents: 'auto',
               display: 'flex',
               alignItems: 'center',
-              gap: isScrolled ? '0.45rem' : '0.25rem',
-              transition: 'gap 0.3s ease',
+              gap: isScrolled ? '0.55rem' : '0.25rem',
+              transition: 'gap 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             className="desktop-links"
+            onMouseLeave={() => setHoveredSection(null)}
           >
             {/* Scrolled Return-to-Top Mini Rocket Pill Button */}
-            <div
-              style={{
-                opacity: isScrolled ? 1 : 0,
-                transform: isScrolled ? 'scale(1) translateX(0)' : 'scale(0.8) translateX(-10px)',
-                pointerEvents: isScrolled ? 'auto' : 'none',
-                transition: 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <a
-                href="#home"
-                onClick={scrollToTop}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.5rem 0.9rem',
-                  borderRadius: 'var(--radius-pill)',
-                  background: 'rgba(10, 12, 18, 0.88)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(102, 230, 255, 0.45)',
-                  color: 'var(--accent)',
-                  textDecoration: 'none',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.76rem',
-                  fontWeight: 600,
-                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(102, 230, 255, 0.15)',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)')}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0px) scale(1)')}
-                title="Return to top"
-              >
-                <Rocket size={14} />
-                <span className="dock-logo-text">UNITY</span>
-              </a>
-            </div>
+            <AnimatePresence>
+              {isScrolled && (
+                <motion.a
+                  initial={{ scale: 0, opacity: 0, x: -15 }}
+                  animate={{ scale: 1, opacity: 1, x: 0 }}
+                  exit={{ scale: 0, opacity: 0, x: -15 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                  whileHover={{ scale: 1.08, y: -2 }}
+                  whileTap={{ scale: 0.92 }}
+                  href="#home"
+                  onClick={scrollToTop}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.55rem 0.95rem',
+                    borderRadius: 'var(--radius-pill)',
+                    background: 'rgba(10, 12, 18, 0.88)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(102, 230, 255, 0.45)',
+                    color: 'var(--accent)',
+                    textDecoration: 'none',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.76rem',
+                    fontWeight: 600,
+                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(102, 230, 255, 0.2)',
+                    cursor: 'pointer',
+                  }}
+                  title="Return to top"
+                >
+                  <Rocket size={14} />
+                  <span className="dock-logo-text">UNITY</span>
+                </motion.a>
+              )}
+            </AnimatePresence>
 
-            {/* Individual Navigation Button Pills */}
-            {navItems.map((item) => {
+            {/* Individual Navigation Buttons with Fluid Sliding Indicator */}
+            {navItems.map((item, idx) => {
               const IconComponent = item.icon;
               const isActive = activeSection === item.id;
+              const isHovered = hoveredSection === item.id;
 
               return (
-                <a
+                <motion.a
                   key={item.id}
+                  layout
                   href={item.path}
+                  onMouseEnter={() => setHoveredSection(item.id)}
+                  whileHover={{ scale: 1.06, y: -2 }}
+                  whileTap={{ scale: 0.93 }}
                   style={{
                     position: 'relative',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: isScrolled ? '0.5rem 0.95rem' : '0.45rem 1rem',
+                    gap: '0.48rem',
+                    padding: isScrolled ? '0.55rem 1.1rem' : '0.5rem 1.15rem',
                     borderRadius: 'var(--radius-pill)',
                     textDecoration: 'none',
                     fontFamily: 'var(--font-display)',
-                    fontSize: isScrolled ? '0.86rem' : '0.9rem',
+                    fontSize: isScrolled ? '0.88rem' : '0.92rem',
                     fontWeight: isActive ? 700 : 500,
-                    color: isActive ? 'var(--text-primary)' : isScrolled ? '#e2e8f0' : 'var(--text-secondary)',
-                    // Floating button background when scrolled
+                    color: isActive ? '#ffffff' : isHovered ? 'var(--text-primary)' : isScrolled ? '#c5d0e0' : 'var(--text-secondary)',
+                    // Morphing background: seamless inside top bar -> discrete floating glass pill on scroll
                     background: isScrolled
                       ? isActive
-                        ? 'rgba(102, 230, 255, 0.22)'
+                        ? 'rgba(102, 230, 255, 0.24)'
                         : 'rgba(10, 12, 18, 0.88)'
                       : 'transparent',
                     backdropFilter: isScrolled ? 'blur(20px)' : 'none',
@@ -265,42 +287,50 @@ export default function Navbar() {
                     border: '1px solid',
                     borderColor: isScrolled
                       ? isActive
-                        ? 'rgba(102, 230, 255, 0.65)'
-                        : 'rgba(255, 255, 255, 0.12)'
+                        ? 'rgba(102, 230, 255, 0.7)'
+                        : 'rgba(255, 255, 255, 0.14)'
                       : 'transparent',
                     boxShadow: isScrolled
                       ? isActive
-                        ? '0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(102, 230, 255, 0.25)'
-                        : '0 8px 25px rgba(0, 0, 0, 0.55)'
+                        ? '0 12px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(102, 230, 255, 0.35)'
+                        : '0 10px 30px rgba(0, 0, 0, 0.6)'
                       : 'none',
-                    transition: 'background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.2s ease, transform 0.2s ease',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     zIndex: 1,
                   }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = isScrolled ? 'rgba(16, 20, 32, 0.95)' : 'rgba(102, 230, 255, 0.08)';
-                      e.currentTarget.style.borderColor = 'rgba(102, 230, 255, 0.35)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.color = 'var(--text-primary)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = isScrolled ? 'rgba(10, 12, 18, 0.88)' : 'transparent';
-                      e.currentTarget.style.borderColor = isScrolled ? 'rgba(255, 255, 255, 0.12)' : 'transparent';
-                      e.currentTarget.style.transform = 'translateY(0px)';
-                      e.currentTarget.style.color = isScrolled ? '#e2e8f0' : 'var(--text-secondary)';
-                    }
-                  }}
                 >
-                  {/* iOS Fluid Shifting Active Highlight Capsule */}
+                  {/* Dynamic Sliding Hover Glass Pill */}
+                  {isHovered && !isActive && (
+                    <motion.div
+                      layoutId="navHoverPill"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 450,
+                        damping: 32,
+                      }}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        borderRadius: 'var(--radius-pill)',
+                        background: 'rgba(102, 230, 255, 0.08)',
+                        border: '1px solid rgba(102, 230, 255, 0.25)',
+                        zIndex: -1,
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  )}
+
+                  {/* Dynamic Sliding Active Section Glowing Capsule */}
                   {isActive && (
                     <motion.div
-                      layoutId="activeNavIndicator"
+                      layoutId="navActivePill"
                       transition={{
                         type: 'spring',
                         stiffness: 420,
-                        damping: 30,
+                        damping: 28,
                       }}
                       style={{
                         position: 'absolute',
@@ -311,33 +341,41 @@ export default function Navbar() {
                         borderRadius: 'var(--radius-pill)',
                         background: isScrolled
                           ? 'transparent'
-                          : 'linear-gradient(135deg, rgba(102, 230, 255, 0.22), rgba(139, 124, 255, 0.15))',
+                          : 'linear-gradient(135deg, rgba(102, 230, 255, 0.26), rgba(139, 124, 255, 0.18))',
                         border: isScrolled
                           ? 'none'
-                          : '1px solid rgba(102, 230, 255, 0.65)',
+                          : '1px solid rgba(102, 230, 255, 0.75)',
                         boxShadow: isScrolled
                           ? 'none'
-                          : '0 0 20px rgba(102, 230, 255, 0.35), inset 0 0 12px rgba(102, 230, 255, 0.12)',
+                          : '0 0 24px rgba(102, 230, 255, 0.4), inset 0 0 14px rgba(102, 230, 255, 0.18)',
                         zIndex: -1,
                         pointerEvents: 'none',
                       }}
                     />
                   )}
 
-                  <IconComponent
-                    size={13}
-                    style={{
-                      color: isActive ? 'var(--accent)' : 'var(--text-muted)',
-                      transition: 'color 0.2s ease',
+                  <motion.div
+                    animate={{
+                      rotate: isActive ? [0, -8, 8, 0] : 0,
+                      scale: isActive ? 1.1 : 1,
                     }}
-                  />
+                    transition={{ duration: 0.4 }}
+                  >
+                    <IconComponent
+                      size={14}
+                      style={{
+                        color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                        transition: 'color 0.2s ease',
+                      }}
+                    />
+                  </motion.div>
                   <span>{item.label}</span>
-                </a>
+                </motion.a>
               );
             })}
-          </div>
+          </motion.div>
 
-          {/* 4. Right Action Button (Engage at top -> Scroll to top arrow when scrolled) */}
+          {/* 4. Right Action Anchor */}
           <div
             style={{
               position: 'absolute',
@@ -350,34 +388,38 @@ export default function Navbar() {
             className="right-action-anchor"
           >
             {/* Top Bar "ENGAGE" CTA */}
-            <div
-              style={{
+            <motion.div
+              animate={{
                 opacity: isScrolled ? 0 : 1,
-                transform: isScrolled ? 'translateY(-6px) scale(0.95)' : 'translateY(0) scale(1)',
-                pointerEvents: isScrolled ? 'none' : 'auto',
-                transition: 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                x: isScrolled ? 15 : 0,
+                scale: isScrolled ? 0.92 : 1,
               }}
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+              style={{ pointerEvents: isScrolled ? 'none' : 'auto' }}
               className="desktop-only"
             >
-              <a
+              <motion.a
+                whileHover={{ scale: 1.06, y: -2 }}
+                whileTap={{ scale: 0.92 }}
                 href="#sponsors"
                 className="btn btn-capsule"
-                style={{ padding: '0.45rem 1.15rem' }}
+                style={{ padding: '0.48rem 1.25rem' }}
               >
                 <Radio size={12} style={{ color: 'var(--accent-status)' }} />
                 <span>ENGAGE</span>
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
 
             {/* Mobile Toggle Button */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.9 }}
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{
-                background: isScrolled ? 'rgba(10, 12, 18, 0.9)' : 'transparent',
-                backdropFilter: isScrolled ? 'blur(20px)' : 'none',
-                WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
-                border: isScrolled ? '1px solid rgba(102, 230, 255, 0.35)' : 'none',
+                background: isScrolled ? 'rgba(10, 12, 18, 0.9)' : 'rgba(16, 18, 26, 0.6)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(102, 230, 255, 0.35)',
                 borderRadius: 'var(--radius-pill)',
                 color: 'var(--text-primary)',
                 cursor: 'pointer',
@@ -392,7 +434,7 @@ export default function Navbar() {
               aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+            </motion.button>
           </div>
         </div>
       </header>
