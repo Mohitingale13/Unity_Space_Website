@@ -1,180 +1,168 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TimelineParticleDome from './TimelineParticleDome';
 
 /**
- * Scroll-Driven Satellite Launch Timeline
- * - 3D Morphing Particle Field: Accelerates on scroll and condenses to form the upper semi-circle planet horizon dome
- * - Strict Fixed 1957 - 2030 Timeline with 74 discrete yearly ticks
- * - Strict constant, uniform pacing across all years
- * - Upright Roman Serif Typography (Newsreader / Lora / Merriweather)
- * - Exact "1957 to 2012" offset layout matching reference image
- * - Balanced gap between Title and Stage Content
- * - Single-line ">1 Million" and neatly proportioned figures
- * - Synchronous locked timeline bar: Yellow fill layer strictly locked with scrubber notch (zero lag/overshoot)
- * - Did You Know finale when timeline completes at 2030
+ * Satellite Launch Milestone Stages
+ * Historical data accurately reflecting global launch acceleration
  */
-
-const START_YEAR = 1957;
-const END_YEAR = 2030;
-const TOTAL_YEARS = END_YEAR - START_YEAR; // 73 intervals (74 years / ticks)
-const TIMELINE_END_PROGRESS = 0.80;        // Progress at which year 2030 is reached
-
-// Content Stages mapped to strictly linear year ranges
 const STAGES = [
   {
-    id: 'era-1957',
+    id: 'era-1957-2012',
     startYear: 1957,
     endYear: 2012,
     startProg: 0.0,
-    endProg: ((2012 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
+    endProg: 0.20,
     type: 'split',
     leftLabel: 'From',
-    leftBig1: '1957',
-    leftSub: 'to',
-    leftBig2: '2012',
+    leftValue: '1957',
+    connector: 'to',
+    leftSub: '2012',
     rightLabel: 'Only around',
-    rightBig: '150',
-    rightDescLines: ['satellites were launched', 'annually'],
+    rightValue: '150',
+    rightSub: 'satellites were launched annually',
   },
   {
-    id: 'era-2013',
+    id: 'era-2013-2019',
     startYear: 2013,
     endYear: 2019,
-    startProg: ((2012 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    endProg: ((2019 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
+    startProg: 0.20,
+    endProg: 0.40,
     type: 'split',
-    leftLabel: 'In',
-    leftBig1: '2013',
-    leftSub: null,
-    leftBig2: null,
-    rightLabel: null,
-    rightBig: '210',
-    rightDescLines: [
-      'satellites launched, marking the beginning',
-      'of an exponential growth trend',
-    ],
+    leftLabel: 'Between',
+    leftValue: '2013',
+    connector: 'and',
+    leftSub: '2019',
+    rightLabel: 'Annual launches averaged',
+    rightValue: '450',
+    rightSub: 'satellites per year',
   },
   {
-    id: 'era-2020',
+    id: 'era-2020-2027',
     startYear: 2020,
-    endYear: 2021,
-    startProg: ((2019 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    endProg: ((2021 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
+    endYear: 2027,
+    startProg: 0.40,
+    endProg: 0.60,
     type: 'split',
     leftLabel: 'By',
-    leftBig1: '2020',
-    leftSub: null,
-    leftBig2: null,
-    rightLabel: 'The number increased to',
-    rightBig: '1,200',
-    rightDescLines: ['satellites launched'],
+    leftValue: '2020',
+    connector: 'to',
+    leftSub: '2027',
+    rightLabel: 'That number grew to over',
+    rightValue: '2,500',
+    rightSub: 'satellites annually in low Earth orbit',
   },
   {
-    id: 'era-2022',
-    startYear: 2022,
-    endYear: 2023,
-    startProg: ((2021 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    endProg: ((2023 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    type: 'split',
-    leftLabel: 'Only two years later, in',
-    leftBig1: '2022',
-    leftSub: null,
-    leftBig2: null,
-    rightLabel: 'Launches nearly doubled to',
-    rightBig: '2,470',
-    rightDescLines: ['satellites'],
-  },
-  {
-    id: 'era-2024',
-    startYear: 2024,
-    endYear: 2027,
-    startProg: ((2023 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    endProg: ((2027 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    type: 'split',
-    leftLabel: 'Looking to the',
-    leftBig1: 'Future',
-    leftSub: null,
-    leftBig2: null,
-    rightLabel: 'In the coming years,',
-    rightBig: '>1 Million',
-    rightDescLines: [
-      'satellites could fill our skies as launch',
-      'costs drop, private investment surges, and',
-      'technology advances.',
-    ],
-  },
-  {
-    id: 'era-2028',
+    id: 'era-2028-2030',
     startYear: 2028,
     endYear: 2030,
-    startProg: ((2027 - START_YEAR + 0.5) / TOTAL_YEARS) * TIMELINE_END_PROGRESS,
-    endProg: TIMELINE_END_PROGRESS,
-    type: 'paragraph',
-    bodyText: 'Well over a million satellites could fill our night sky in just a matter of years as launch technology gets cheaper along with technological breakthroughs and private sector involvement. Annual launches could hit millions, boosting connectivity but straining space sustainability.',
+    startProg: 0.60,
+    endProg: 0.80,
+    type: 'split',
+    leftLabel: 'By',
+    leftValue: '2028',
+    connector: 'to',
+    leftSub: '2030',
+    rightLabel: 'Projections estimate over',
+    rightValue: '5,000+',
+    rightSub: 'annual launches and mass constellations',
   },
   {
     id: 'era-didyouknow',
     startYear: 2030,
     endYear: 2030,
-    startProg: TIMELINE_END_PROGRESS,
+    startProg: 0.80,
     endProg: 1.0,
     type: 'fact',
+    tag: 'DID YOU KNOW?',
+    headline: 'Most satellite constellations are just 500 km above our heads.',
+    subheadline: (
+      <>
+        That&apos;s approximately the distance from{' '}
+        <span className="timeline-badge-blue">New York</span> to{' '}
+        <span className="timeline-badge-blue">Montreal</span>.
+      </>
+    ),
   },
 ];
 
-const MILESTONES = [1957, 2013, 2020, 2022, 2024, 2028, 2030];
+const MILESTONES = [1957, 1970, 1985, 2000, 2013, 2020, 2028, 2030];
+const START_YEAR = 1957;
+const END_YEAR = 2030;
+const TOTAL_YEARS = END_YEAR - START_YEAR; // 73 years
+const TIMELINE_END_PROGRESS = 0.80; // 0.0 -> 0.80 covers 1957 -> 2030; 0.80 -> 1.00 is Did You Know
 
 export default function SatelliteTimeline() {
   const sectionRef = useRef(null);
   const [progress, setProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Track window scroll and compute pinned progress (0 to 1)
   useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
       if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const scrollableDistance = sectionRef.current.offsetHeight - window.innerHeight;
-      
-      if (scrollableDistance <= 0) return;
-
-      const scrolled = -rect.top;
-      const currentProg = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-      
-      setProgress(currentProg);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const rect = sectionRef.current.getBoundingClientRect();
+          const totalScrollable = sectionRef.current.offsetHeight - window.innerHeight;
+          
+          if (totalScrollable > 0) {
+            const currentScroll = -rect.top;
+            const rawProgress = currentScroll / totalScrollable;
+            const clamped = Math.max(0, Math.min(1, rawProgress));
+            setProgress(clamped);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Bar scrubber progress: exactly linear across 1957 to 2030 (0 to 1)
-  const barScrubProgress = Math.min(1.0, Math.max(0, progress / TIMELINE_END_PROGRESS));
+  // Compute Year strictly proportional to the 0.0 -> 0.80 scroll budget
+  let currentYear = START_YEAR;
+  let barScrubProgress = 0;
 
-  // Current Year strictly between 1957 and 2030 (each tick = 1 year, uniform pace)
-  const currentYear = Math.min(END_YEAR, Math.max(START_YEAR, Math.round(START_YEAR + barScrubProgress * TOTAL_YEARS)));
-
-  // Timeline Bar Entrance and Exit Animation Calculation
-  let barTranslateY = 0;
-  let barOpacity = 1;
-
-  if (progress < 0.04) {
-    const enterT = progress / 0.04;
-    barTranslateY = (1 - enterT) * 80;
-    barOpacity = enterT;
-  } else if (progress > TIMELINE_END_PROGRESS) {
-    const exitT = Math.min(1, (progress - TIMELINE_END_PROGRESS) / 0.06);
-    barTranslateY = exitT * 90;
-    barOpacity = 1 - exitT;
+  if (progress < TIMELINE_END_PROGRESS) {
+    const timelineFraction = progress / TIMELINE_END_PROGRESS;
+    currentYear = Math.min(END_YEAR, Math.floor(START_YEAR + timelineFraction * (TOTAL_YEARS + 0.99)));
+    barScrubProgress = Math.max(0, Math.min(1, (currentYear - START_YEAR) / TOTAL_YEARS));
+  } else {
+    currentYear = END_YEAR;
+    barScrubProgress = 1.0;
   }
 
-  // Step milestone jump on arrow buttons
+  // Smooth entry/exit transitions for the bottom scrubber bar
+  let barOpacity = 1;
+  let barTranslateY = 0;
+
+  if (progress < 0.03) {
+    barOpacity = Math.max(0, progress / 0.03);
+    barTranslateY = (1 - barOpacity) * 20;
+  } else if (progress > 0.96) {
+    barOpacity = Math.max(0, (1 - progress) / 0.04);
+    barTranslateY = (1 - barOpacity) * 20;
+  }
+
+  // Step button handler (jumps directly between key historical milestone decades)
   const handleStep = (direction) => {
     if (!sectionRef.current) return;
     
-    let targetYear = currentYear;
+    let targetYear;
     if (direction > 0) {
       targetYear = MILESTONES.find((y) => y > currentYear) || END_YEAR;
     } else {
@@ -191,7 +179,6 @@ export default function SatelliteTimeline() {
     window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
   };
 
-  // Total ticks: 74 ticks (one per year from 1957 to 2030)
   const totalTicks = TOTAL_YEARS + 1;
   const isLateStage = progress >= TIMELINE_END_PROGRESS;
 
@@ -201,8 +188,9 @@ export default function SatelliteTimeline() {
       id="satellite-timeline"
       style={{
         position: 'relative',
-        height: '900vh', // Uniform, deliberate scroll budget
+        height: '900vh',
         width: '100%',
+        backgroundColor: '#040714',
         background: 'transparent',
       }}
       aria-label="Satellite Launches Timeline Story"
@@ -217,22 +205,23 @@ export default function SatelliteTimeline() {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center', // Center content harmoniously together
+          justifyContent: isMobile ? 'flex-start' : 'center',
           alignItems: 'center',
+          paddingTop: isMobile ? 'clamp(5rem, 12vh, 7.5rem)' : '0',
           overflow: 'hidden',
           background: 'transparent',
           zIndex: 10,
         }}
       >
-        {/* 3D Morphing Particle Field to Planet Horizon Semi-Circle */}
+        {/* 3D Morphing Particle Sphere */}
         <TimelineParticleDome progress={progress} />
 
-        {/* TOP: Fixed Display Title (Balanced, natural gap above stage content) */}
+        {/* TOP: Fixed Display Title (Elevated on mobile with generous breathing gap) */}
         <header
           style={{
             position: 'relative',
             zIndex: 5,
-            marginBottom: 'clamp(2.5rem, 5.5vh, 4rem)',
+            marginBottom: isMobile ? 'clamp(2.8rem, 6.5vh, 4.5rem)' : 'clamp(2.5rem, 5.5vh, 4rem)',
             textAlign: 'center',
             opacity: isLateStage ? 0 : 1,
             transform: isLateStage ? 'translateY(-15px)' : 'translateY(0)',
@@ -243,12 +232,12 @@ export default function SatelliteTimeline() {
           <h2
             style={{
               fontFamily: 'var(--font-serif)',
-              fontSize: 'clamp(1.85rem, 3.2vw, 2.75rem)',
+              fontSize: isMobile ? 'clamp(1.75rem, 5.2vw, 2.25rem)' : 'clamp(1.85rem, 3.2vw, 2.75rem)',
               fontWeight: 400,
               color: '#ffffff',
               fontStyle: 'normal',
               lineHeight: 1.22,
-              textShadow: '0 4px 20px rgba(0, 0, 0, 0.9)',
+              textShadow: '0 4px 20px rgba(0, 0, 0, 0.95)',
             }}
           >
             In a Nutshell:<br />
@@ -256,18 +245,18 @@ export default function SatelliteTimeline() {
           </h2>
         </header>
 
-        {/* CENTER: Pinned Dynamic Stage Content Stack (Pure Upright Editorial Serif) */}
+        {/* CENTER: Pinned Dynamic Stage Content Stack */}
         <div
           style={{
             position: 'relative',
             zIndex: 5,
             width: '100%',
             maxWidth: '1050px',
-            padding: '0 clamp(1.25rem, 4vw, 3rem)',
+            padding: '0 clamp(1rem, 4vw, 3rem)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: '260px',
+            minHeight: isMobile ? '200px' : '260px',
             pointerEvents: 'none',
           }}
         >
@@ -328,86 +317,39 @@ export default function SatelliteTimeline() {
                       {stage.leftLabel && (
                         <span className="timeline-label">{stage.leftLabel}</span>
                       )}
-
-                      {/* If stage has two stacked years (1957 to 2012), stack them tightly with "to" positioned on right */}
-                      {stage.leftBig2 ? (
-                        <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <h3 className="timeline-giant-number" style={{ lineHeight: 0.92 }}>
-                            {stage.leftBig1}
-                          </h3>
-                          {stage.leftSub && (
-                            <span
-                              style={{
-                                position: 'absolute',
-                                right: '-2.4rem',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                fontFamily: 'var(--font-serif)',
-                                fontSize: 'clamp(1.15rem, 1.4vw, 1.35rem)',
-                                color: '#ffffff',
-                                fontWeight: 400,
-                                fontStyle: 'normal',
-                              }}
-                            >
-                              {stage.leftSub}
-                            </span>
-                          )}
-                          <h3 className="timeline-giant-number" style={{ lineHeight: 0.92 }}>
-                            {stage.leftBig2}
-                          </h3>
-                        </div>
-                      ) : (
-                        <h3 className="timeline-giant-number">{stage.leftBig1}</h3>
+                      <div className="timeline-giant-number">{stage.leftValue}</div>
+                      {stage.connector && (
+                        <span className="timeline-connector">{stage.connector}</span>
+                      )}
+                      {stage.leftSub && (
+                        <div className="timeline-giant-number">{stage.leftSub}</div>
                       )}
                     </div>
 
                     {/* Right Column */}
-                    <div className="timeline-col" style={{ maxWidth: '440px' }}>
+                    <div className="timeline-col">
                       {stage.rightLabel && (
-                        <span className="timeline-label">{stage.rightLabel}</span>
+                        <span className="timeline-sub-label">{stage.rightLabel}</span>
                       )}
-                      <h3 className="timeline-giant-number">{stage.rightBig}</h3>
-                      {stage.rightDescLines && (
-                        <p className="timeline-desc">
-                          {stage.rightDescLines.map((line, idx) => (
-                            <span key={idx} style={{ display: 'block' }}>{line}</span>
-                          ))}
-                        </p>
+                      <div className="timeline-giant-number">{stage.rightValue}</div>
+                      {stage.rightSub && (
+                        <p className="timeline-desc">{stage.rightSub}</p>
                       )}
                     </div>
                   </div>
                 )}
 
-                {/* Paragraph Stage (2028 - 2030 Sustainability) */}
-                {stage.type === 'paragraph' && (
-                  <div style={{ maxWidth: '800px', textAlign: 'center', margin: '0 auto' }}>
-                    <p className="timeline-long-text">{stage.bodyText}</p>
-                  </div>
-                )}
-
-                {/* Did You Know Finale (Matches Reference Image) */}
+                {/* Did You Know Finale Layout */}
                 {stage.type === 'fact' && (
-                  <div
-                    style={{
-                      maxWidth: '920px',
-                      textAlign: 'center',
-                      margin: '0 auto',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {/* Royal Blue [ DID YOU KNOW? ] Badge */}
-                    <div className="timeline-pill-tag">
-                      DID YOU KNOW?
-                    </div>
-
-                    {/* Large Editorial Serif Quote with [New York] and [Montreal] Blue Badges */}
-                    <h2 className="timeline-fact-text">
-                      Most satellite constellations are just 500 km above our heads. That’s approximately the distance from{' '}
-                      <span className="timeline-badge-blue">New York</span> to{' '}
-                      <span className="timeline-badge-blue">Montreal</span>.
-                    </h2>
+                  <div className="timeline-fact-card">
+                    {stage.tag && (
+                      <div className="timeline-pill-tag">{stage.tag}</div>
+                    )}
+                    <h3 className="timeline-fact-text">
+                      {stage.headline}
+                      <br />
+                      {stage.subheadline}
+                    </h3>
                   </div>
                 )}
               </div>
@@ -415,18 +357,20 @@ export default function SatelliteTimeline() {
           })}
         </div>
 
-        {/* BOTTOM: Sliding Timeline Bar with Arrow Buttons & Synchronously Locked Fill */}
+        {/* BOTTOM: Perfectly Centered Synchronous Scrubbing Timeline Bar */}
         <footer
           style={{
             position: 'absolute',
-            bottom: 0,
+            bottom: isMobile ? 'clamp(1.25rem, 3.5vh, 2rem)' : 'clamp(1.5rem, 3.5vh, 2.5rem)',
             left: 0,
-            zIndex: 10,
+            right: 0,
             width: '100%',
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            paddingBottom: 'clamp(1.8rem, 4.5vh, 3.2rem)',
+            justifyContent: 'center',
+            padding: '0 clamp(0.75rem, 3vw, 1.5rem)',
+            boxSizing: 'border-box',
+            pointerEvents: 'auto',
+            zIndex: 10,
             transform: `translateY(${barTranslateY}px)`,
             opacity: barOpacity,
             transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
@@ -435,19 +379,22 @@ export default function SatelliteTimeline() {
         >
           <div
             style={{
-              width: 'min(94%, 820px)',
+              width: '100%',
+              maxWidth: '820px',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.65rem',
+              justifyContent: 'center',
+              gap: isMobile ? '0.45rem' : '0.65rem',
+              boxSizing: 'border-box',
             }}
           >
-            {/* Left Chevron Button (Solid Royal Blue) */}
+            {/* Left Chevron Button */}
             <button
               onClick={() => handleStep(-1)}
               aria-label="Previous timeline milestone"
               style={{
-                width: '44px',
-                height: '44px',
+                width: isMobile ? '38px' : '44px',
+                height: isMobile ? '38px' : '44px',
                 flexShrink: 0,
                 borderRadius: '8px',
                 background: '#1d4ed8',
@@ -463,17 +410,18 @@ export default function SatelliteTimeline() {
               onMouseEnter={(e) => (e.currentTarget.style.background = '#2563eb')}
               onMouseLeave={(e) => (e.currentTarget.style.background = '#1d4ed8')}
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={isMobile ? 18 : 20} />
             </button>
 
             {/* Central Colorful Timeline Bar Container */}
             <div
               style={{
                 flex: 1,
+                minWidth: 0,
                 position: 'relative',
               }}
             >
-              {/* Scrubber Tooltip Badge with Downward Pointer - Strictly Synced (Zero Lag) */}
+              {/* Scrubber Tooltip Badge */}
               <div
                 style={{
                   position: 'absolute',
@@ -488,7 +436,7 @@ export default function SatelliteTimeline() {
                   willChange: 'left',
                 }}
               >
-                {/* White Capsule Pill with Dark Text (Strict Numeric Year: 1957 ... 2030) */}
+                {/* White Capsule Pill with Dark Text */}
                 <div
                   style={{
                     background: '#ffffff',
@@ -523,18 +471,18 @@ export default function SatelliteTimeline() {
               <div
                 style={{
                   width: '100%',
-                  height: '44px',
+                  height: isMobile ? '38px' : '44px',
                   borderRadius: '8px',
                   background: '#1d4ed8',
                   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
-                  padding: '4px 10px',
+                  padding: '3px 8px',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
               >
-                {/* Yellow/Amber Active Fill Layer - 100% Synchronously Locked behind White Scrubber Notch */}
+                {/* Yellow/Amber Active Fill Layer */}
                 <div
                   style={{
                     position: 'absolute',
@@ -549,7 +497,7 @@ export default function SatelliteTimeline() {
                   }}
                 />
 
-                {/* Discrete Vertical White Ticks: Exactly 74 ticks (one per year 1957 to 2030) */}
+                {/* Discrete Vertical White Ticks: Exactly 74 ticks */}
                 {Array.from({ length: totalTicks }).map((_, i) => {
                   const tickYear = START_YEAR + i;
                   const isMilestone = MILESTONES.includes(tickYear);
@@ -560,13 +508,13 @@ export default function SatelliteTimeline() {
                       key={i}
                       style={{
                         flex: '1 1 0',
-                        height: isMilestone ? '26px' : isDecade ? '22px' : '16px',
-                        margin: '0 0.5px',
+                        height: isMilestone ? (isMobile ? '22px' : '26px') : isDecade ? (isMobile ? '18px' : '22px') : (isMobile ? '13px' : '16px'),
+                        margin: '0 0.25px',
                         borderRadius: '1px',
                         background: '#ffffff',
                         opacity: isMilestone ? 1 : isDecade ? 0.9 : 0.6,
                         boxShadow: isMilestone ? '0 0 4px #ffffff' : 'none',
-                        width: isMilestone ? '3.5px' : '2px',
+                        width: isMilestone ? '3px' : '1.5px',
                         position: 'relative',
                         zIndex: 2,
                       }}
@@ -575,13 +523,13 @@ export default function SatelliteTimeline() {
                   );
                 })}
 
-                {/* Scrubber Vertical White Notch Indicator - 100% Locked with Fill */}
+                {/* Scrubber Vertical White Notch Indicator */}
                 <div
                   style={{
                     position: 'absolute',
                     left: `calc(${barScrubProgress * 100}% - 1.5px)`,
-                    top: 4,
-                    bottom: 4,
+                    top: 3,
+                    bottom: 3,
                     width: '3px',
                     background: '#ffffff',
                     borderRadius: '2px',
@@ -593,13 +541,13 @@ export default function SatelliteTimeline() {
               </div>
             </div>
 
-            {/* Right Chevron Button (Solid Royal Blue) */}
+            {/* Right Chevron Button */}
             <button
               onClick={() => handleStep(1)}
               aria-label="Next timeline milestone"
               style={{
-                width: '44px',
-                height: '44px',
+                width: isMobile ? '38px' : '44px',
+                height: isMobile ? '38px' : '44px',
                 flexShrink: 0,
                 borderRadius: '8px',
                 background: '#1d4ed8',
@@ -615,7 +563,7 @@ export default function SatelliteTimeline() {
               onMouseEnter={(e) => (e.currentTarget.style.background = '#2563eb')}
               onMouseLeave={(e) => (e.currentTarget.style.background = '#1d4ed8')}
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={isMobile ? 18 : 20} />
             </button>
           </div>
         </footer>

@@ -11,8 +11,8 @@
 }
 
 html {
-  background-color: var(--space-bg);
-  background: radial-gradient(ellipse at 50% 35%, #0c163a 0%, #060c24 55%, #020512 100%) fixed;
+  background-color: #040714 !important;
+  background: #040714;
   color: var(--text-primary);
   scroll-behavior: auto; /* Handled smoothly by Lenis */
   -webkit-font-smoothing: antialiased;
@@ -23,7 +23,8 @@ html {
 }
 
 body {
-  background-color: transparent;
+  background-color: #040714 !important;
+  background: #040714;
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: clip;
@@ -41,8 +42,11 @@ p, h1, h2, h3, h4, span, .text-readable {
 
 #root, .aerospace-viewport {
   width: 100%;
+  min-height: 100vh;
   position: relative;
+  background-color: #040714;
 }
+
 
 /* Form Input Sizing Guardrail: 16px minimum prevents iOS Safari auto-zooming */
 input, textarea, select {
