@@ -324,3 +324,67 @@ button:active, .btn:active, [role="button"]:active {
   box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
   margin-bottom: 2rem;
 }
+
+/* ==========================================================================
+   RESPONSIVE UTILITIES & MOBILE-FIRST NAVBAR FIXES
+   ========================================================================== */
+
+/* Responsive Earth Background */
+.hero-earth-container {
+  bottom: clamp(-10%, -6vw, -2%);
+  width: clamp(900px, 115vw, 1850px);
+  max-width: 1900px;
+}
+
+@media (max-width: 768px) {
+  .hero-earth-container {
+    bottom: 0% !important;
+    width: clamp(480px, 140vw, 750px) !important;
+  }
+}
+
+/* Mobile Breakpoint (< 900px) */
+@media (max-width: 900px) {
+  .desktop-links {
+    display: none !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .brand-anchor {
+    position: static !important;
+    display: flex !important;
+  }
+
+  .right-action-anchor {
+    position: static !important;
+    display: flex !important;
+  }
+
+  .navbar-container-inner {
+    justify-content: space-between !important;
+    padding: 0 0.25rem !important;
+  }
+}
+
+/* Desktop Breakpoint (>= 901px) */
+@media (min-width: 901px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .desktop-links {
+    display: flex !important;
+  }
+  
+  .desktop-only {
+    display: flex !important;
+  }
+}
+

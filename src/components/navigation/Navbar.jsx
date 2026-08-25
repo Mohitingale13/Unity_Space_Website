@@ -4,9 +4,10 @@ import { Rocket, Menu, X, Compass, Radio, Target, Terminal, Users, BookOpen, Hea
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
- * Modern Frosted White Glass Navbar
+ * Modern Frosted White Glass Navbar (Mobile-First Engineered)
  * - Translucent white glass aesthetics with deep backdrop blur
  * - Luminous white refraction borders & specular top highlights
+ * - Clean responsive behavior: strictly separates desktop links from mobile hamburger menu
  * - Morphing top capsule to floating frosted glass pills on scroll
  * - High-contrast crisp white typography with smooth hover & active animations
  */
@@ -26,7 +27,7 @@ export default function Navbar() {
           const scrollY = window.scrollY;
 
           // Asymmetric hysteresis threshold for smooth morphing
-          if (scrollY > 55) {
+          if (scrollY > 50) {
             setIsScrolled(true);
           } else if (scrollY < 15) {
             setIsScrolled(false);
@@ -77,12 +78,12 @@ export default function Navbar() {
           width: '100%',
           zIndex: 1000,
           pointerEvents: 'none',
-          padding: isScrolled ? '0.75rem 1rem' : '1.25rem 1.5rem',
-          transition: 'padding 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          padding: isScrolled ? '0.65rem 1rem' : '1.1rem 1.25rem',
+          transition: 'padding 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
         <div
-          className="container"
+          className="container navbar-container-inner"
           style={{
             position: 'relative',
             display: 'flex',
@@ -91,8 +92,9 @@ export default function Navbar() {
             minHeight: '48px',
           }}
         >
-          {/* 1. Dynamic Morphing Top Translucent White Glass Capsule Bar */}
+          {/* 1. Dynamic Morphing Top Translucent White Glass Capsule Bar (Desktop Only) */}
           <motion.div
+            className="desktop-only top-capsule-bg"
             initial={false}
             animate={{
               opacity: isScrolled ? 0 : 1,
@@ -124,40 +126,41 @@ export default function Navbar() {
             aria-hidden="true"
           />
 
-          {/* 2. Brand Anchor (Left) - Visible only at the top */}
-          <motion.div
-            animate={{
-              opacity: isScrolled ? 0 : 1,
-              x: isScrolled ? -15 : 0,
-              scale: isScrolled ? 0.92 : 1,
-            }}
-            transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+          {/* 2. Brand Anchor (Left on Desktop, Clean Pill on Mobile) */}
+          <div
+            className="brand-anchor"
             style={{
               position: 'absolute',
-              left: 'clamp(1.5rem, 5vw, 3.5rem)',
+              left: 'clamp(1rem, 4vw, 3.5rem)',
               display: 'flex',
               alignItems: 'center',
-              pointerEvents: isScrolled ? 'none' : 'auto',
+              pointerEvents: 'auto',
               zIndex: 2,
             }}
-            className="brand-anchor"
           >
             <Link
               to="/"
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.75rem',
+                gap: '0.65rem',
                 textDecoration: 'none',
                 color: '#ffffff',
+                padding: '0.35rem 0.65rem',
+                borderRadius: 'var(--radius-pill)',
+                background: isScrolled ? 'rgba(255, 255, 255, 0.14)' : 'transparent',
+                backdropFilter: isScrolled ? 'blur(20px)' : 'none',
+                WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
+                border: isScrolled ? '1px solid rgba(255, 255, 255, 0.25)' : '1px solid transparent',
+                transition: 'all 0.3s ease',
               }}
             >
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 8 }}
                 whileTap={{ scale: 0.92 }}
                 style={{
-                  width: '36px',
-                  height: '36px',
+                  width: '34px',
+                  height: '34px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.15))',
                   border: '1px solid rgba(255, 255, 255, 0.5)',
@@ -166,20 +169,22 @@ export default function Navbar() {
                   justifyContent: 'center',
                   color: '#ffffff',
                   boxShadow: '0 0 16px rgba(255, 255, 255, 0.25)',
+                  flexShrink: 0,
                 }}
               >
-                <Rocket size={18} />
+                <Rocket size={17} />
               </motion.div>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span
                   style={{
                     fontFamily: 'var(--font-display)',
                     fontWeight: 800,
-                    fontSize: '1.15rem',
+                    fontSize: '1.05rem',
                     letterSpacing: '-0.02em',
                     lineHeight: 1.1,
                     color: '#ffffff',
                     textShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   UNITY SPACE
@@ -187,18 +192,19 @@ export default function Navbar() {
                 <span
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '0.62rem',
+                    fontSize: '0.6rem',
                     color: 'rgba(255, 255, 255, 0.85)',
-                    letterSpacing: '0.1em',
+                    letterSpacing: '0.08em',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   SVPM COE BARAMATI
                 </span>
               </div>
             </Link>
-          </motion.div>
+          </div>
 
-          {/* 3. Center Navigation Track with White Frosted Glass Floating Pills */}
+          {/* 3. Center Navigation Track (Strictly Hidden on Mobile) */}
           <motion.div
             layout
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
@@ -206,7 +212,6 @@ export default function Navbar() {
               position: 'relative',
               zIndex: 2,
               pointerEvents: 'auto',
-              display: 'flex',
               alignItems: 'center',
               gap: isScrolled ? '0.55rem' : '0.25rem',
               transition: 'gap 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -214,7 +219,6 @@ export default function Navbar() {
             className="desktop-links"
             onMouseLeave={() => setHoveredSection(null)}
           >
-            {/* Navigation Buttons */}
             {navItems.map((item) => {
               const IconComponent = item.icon;
               const isActive = activeSection === item.id;
@@ -240,7 +244,6 @@ export default function Navbar() {
                     fontSize: isScrolled ? '0.88rem' : '0.92rem',
                     fontWeight: isActive ? 700 : 500,
                     color: isActive ? '#ffffff' : isHovered ? '#ffffff' : isScrolled ? '#f1f5f9' : 'rgba(255, 255, 255, 0.9)',
-                    // Morphing white glass: clean inside top bar -> floating white frosted glass pill on scroll
                     background: isScrolled
                       ? isActive
                         ? 'rgba(255, 255, 255, 0.28)'
@@ -263,15 +266,10 @@ export default function Navbar() {
                     zIndex: 1,
                   }}
                 >
-                  {/* Dynamic Sliding Hover White Glass Pill */}
                   {isHovered && !isActive && (
                     <motion.div
                       layoutId="navHoverPill"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 450,
-                        damping: 32,
-                      }}
+                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       style={{
                         position: 'absolute',
                         top: 0,
@@ -288,15 +286,10 @@ export default function Navbar() {
                     />
                   )}
 
-                  {/* Dynamic Sliding Active Section Glowing Capsule */}
                   {isActive && (
                     <motion.div
                       layoutId="navActivePill"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 420,
-                        damping: 28,
-                      }}
+                      transition={{ type: 'spring', stiffness: 420, damping: 28 }}
                       style={{
                         position: 'absolute',
                         top: 0,
@@ -307,9 +300,7 @@ export default function Navbar() {
                         background: isScrolled
                           ? 'transparent'
                           : 'linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.18))',
-                        border: isScrolled
-                          ? 'none'
-                          : '1px solid rgba(255, 255, 255, 0.6)',
+                        border: isScrolled ? 'none' : '1px solid rgba(255, 255, 255, 0.6)',
                         boxShadow: isScrolled
                           ? 'none'
                           : '0 0 22px rgba(255, 255, 255, 0.3), inset 0 1px 1.5px rgba(255, 255, 255, 0.5)',
@@ -342,17 +333,17 @@ export default function Navbar() {
 
           {/* 4. Right Action Anchor */}
           <div
+            className="right-action-anchor"
             style={{
               position: 'absolute',
-              right: 'clamp(1.5rem, 5vw, 3.5rem)',
+              right: 'clamp(1rem, 4vw, 3.5rem)',
               display: 'flex',
               alignItems: 'center',
               zIndex: 2,
               pointerEvents: 'auto',
             }}
-            className="right-action-anchor"
           >
-            {/* Top Bar "ENGAGE" CTA */}
+            {/* Top Bar "ENGAGE" CTA (Desktop Only) */}
             <motion.div
               animate={{
                 opacity: isScrolled ? 0 : 1,
@@ -389,22 +380,20 @@ export default function Navbar() {
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{
-                background: 'rgba(255, 255, 255, 0.16)',
+                background: 'rgba(255, 255, 255, 0.18)',
                 backdropFilter: 'blur(24px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-                border: '1px solid rgba(255, 255, 255, 0.35)',
+                border: '1px solid rgba(255, 255, 255, 0.4)',
                 borderRadius: 'var(--radius-pill)',
                 color: '#ffffff',
                 cursor: 'pointer',
                 padding: '0.55rem 0.85rem',
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.2)',
+                boxShadow: '0 4px 18px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
               }}
-              className="mobile-toggle"
-              aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
-              aria-expanded={isMobileMenuOpen}
+              aria-label="Toggle Navigation Menu"
+              className="mobile-only"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </motion.button>
@@ -412,104 +401,74 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Touch Drawer Navigation (Frosted Deep Space Glass) */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.25 }}
+            initial={{ opacity: 0, y: -20, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             style={{
               position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              background: 'rgba(6, 11, 28, 0.88)',
-              backdropFilter: 'blur(32px) saturate(190%)',
-              WebkitBackdropFilter: 'blur(32px) saturate(190%)',
+              top: '72px',
+              left: '1rem',
+              right: '1rem',
+              background: 'rgba(10, 15, 28, 0.92)',
+              backdropFilter: 'blur(30px) saturate(190%)',
+              WebkitBackdropFilter: 'blur(30px) saturate(190%)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '1.25rem',
               zIndex: 999,
-              padding: '6rem 2rem 3rem',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.3)',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div className="mono-label" style={{ color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.5rem' }}>
-                NAVIGATION TELEMETRY
-              </div>
-              {navItems.map((item, idx) => {
-                const IconComp = item.icon;
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {navItems.map((item) => {
+                const IconComponent = item.icon;
                 const isActive = activeSection === item.id;
+
                 return (
-                  <motion.a
+                  <a
                     key={item.id}
                     href={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.04 + 0.05 }}
-                    whileTap={{ scale: 0.96 }}
                     onClick={() => setIsMobileMenuOpen(false)}
                     style={{
-                      padding: '0.85rem 1.25rem',
-                      borderRadius: 'var(--radius-md)',
-                      background: isActive ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.08)',
-                      border: '1px solid',
-                      borderColor: isActive ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.18)',
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '1.35rem',
-                      fontWeight: 700,
-                      color: '#ffffff',
-                      textDecoration: 'none',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
-                      boxShadow: isActive ? '0 8px 25px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4)' : 'none',
+                      gap: '0.75rem',
+                      padding: '0.85rem 1rem',
+                      borderRadius: 'var(--radius-md)',
+                      textDecoration: 'none',
+                      color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.8)',
+                      background: isActive ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                      border: isActive ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+                      fontWeight: isActive ? 700 : 500,
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '1rem',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <IconComp size={20} style={{ color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.7)' }} />
-                      <span>{item.label}</span>
-                    </div>
-                    <Compass size={18} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
-                  </motion.a>
+                    <IconComponent size={18} style={{ color: isActive ? '#66e6ff' : 'inherit' }} />
+                    <span>{item.label}</span>
+                  </a>
                 );
               })}
-            </div>
-
-            <div style={{ paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.15)' }}>
-              <div className="mono-label" style={{ marginBottom: '0.35rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                HOST INSTITUTION
+              <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <a
+                  href="#sponsors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: '0.75rem' }}
+                >
+                  <Radio size={14} />
+                  <span>ENGAGE MISSION</span>
+                </a>
               </div>
-              <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0 }}>
-                SVPM College of Engineering Malegaon(bk) Baramati
-              </p>
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <style>{`
-        .desktop-links {
-          display: none;
-        }
-        .desktop-only {
-          display: none;
-        }
-        @media (min-width: 900px) {
-          .desktop-links {
-            display: flex !important;
-          }
-          .desktop-only {
-            display: block !important;
-          }
-          .mobile-toggle {
-            display: none !important;
-          }
-        }
-      `}</style>
     </>
   );
 }
