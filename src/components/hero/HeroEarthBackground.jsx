@@ -1,24 +1,34 @@
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 /**
  * Scroll-Driven Earth Planet Background
- * Mobile-First Optimized:
- * - Positioned cleanly in the first visible viewport on mobile screens (pinned to the bottom of the landing frame).
- * - Full-resolution GPU texture rendering without filter blur on the image.
- * - Upper-curve spherical feathering on bottom edge.
- * - Fades out smoothly as the user scrolls into the timeline.
+ * Mobile-First Positioned in First Visible Screen:
+ * - Pinned to the 100vh initial viewport on mobile devices.
+ * - Earth atmospheric rim arches prominently in the first visible screen behind the hero CTA/stats.
+ * - Extended scroll visibility (stays 100% visible throughout hero scroll, only fading as user enters the timeline).
  */
 export default function HeroEarthBackground() {
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Track global scroll
   const { scrollY } = useScroll();
 
-  // Responsive scroll transforms
-  const scale = useTransform(scrollY, [0, 300, 560], [1.0, 1.15, 1.3]);
-  const opacity = useTransform(scrollY, [0, 130, 350], [1, 0.6, 0]);
-  const y = useTransform(scrollY, [0, 450], [0, -18]);
+  // Responsive scroll transforms:
+  // - Stays 100% visible from scroll 0 to 450px, smoothly fading out as user enters the timeline (850px)
+  const scale = useTransform(scrollY, [0, 400, 800], [1.0, 1.12, 1.25]);
+  const opacity = useTransform(scrollY, [0, 450, 850], [1, 0.75, 0]);
+  const y = useTransform(scrollY, [0, 600], [0, -25]);
 
   return (
     <div
@@ -28,20 +38,22 @@ export default function HeroEarthBackground() {
         top: 0,
         left: 0,
         width: '100%',
-        height: '100%',
+        height: isMobile ? '100vh' : '100%',
         overflow: 'hidden',
         pointerEvents: 'none',
         zIndex: 1,
       }}
       aria-hidden="true"
     >
-      {/* Scalable Planet Container (Positioned in first visible screen on mobile & desktop) */}
+      {/* Scalable Planet Container */}
       <motion.div
-        className="hero-earth-container"
         style={{
           position: 'absolute',
           left: '50%',
           x: '-50%',
+          bottom: isMobile ? 'clamp(4%, 8vh, 12%)' : 'clamp(-8%, -4vw, 0%)',
+          width: isMobile ? 'clamp(460px, 145vw, 750px)' : 'clamp(950px, 115vw, 1850px)',
+          maxWidth: '1900px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -57,12 +69,12 @@ export default function HeroEarthBackground() {
         <div
           style={{
             position: 'absolute',
-            bottom: '20%',
-            width: '90%',
-            height: '45%',
+            bottom: '22%',
+            width: '92%',
+            height: '48%',
             borderRadius: '50%',
-            background: 'radial-gradient(ellipse at 50% 85%, rgba(65, 155, 255, 0.4) 0%, rgba(20, 85, 225, 0.18) 50%, transparent 75%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(ellipse at 50% 85%, rgba(65, 155, 255, 0.45) 0%, rgba(20, 85, 225, 0.22) 50%, transparent 75%)',
+            filter: 'blur(45px)',
             pointerEvents: 'none',
             zIndex: 1,
           }}
