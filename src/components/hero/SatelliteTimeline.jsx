@@ -205,9 +205,8 @@ export default function SatelliteTimeline() {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: isMobile ? 'flex-start' : 'center',
+          justifyContent: 'center',
           alignItems: 'center',
-          paddingTop: isMobile ? 'clamp(5rem, 12vh, 7.5rem)' : '0',
           overflow: 'hidden',
           background: 'transparent',
           zIndex: 10,
@@ -216,15 +215,19 @@ export default function SatelliteTimeline() {
         {/* 3D Morphing Particle Sphere */}
         <TimelineParticleDome progress={progress} />
 
-        {/* TOP: Fixed Display Title (Elevated on mobile with generous breathing gap) */}
+        {/* TOP: Fixed Display Title (Elevated cleanly above with no collision) */}
         <header
           style={{
             position: 'relative',
             zIndex: 5,
-            marginBottom: isMobile ? 'clamp(2.8rem, 6.5vh, 4.5rem)' : 'clamp(2.5rem, 5.5vh, 4rem)',
+            marginBottom: isMobile ? 'clamp(1.75rem, 4vh, 2.75rem)' : 'clamp(2.5rem, 5.5vh, 4rem)',
             textAlign: 'center',
             opacity: isLateStage ? 0 : 1,
-            transform: isLateStage ? 'translateY(-15px)' : 'translateY(0)',
+            transform: isLateStage
+              ? 'translateY(-15px)'
+              : isMobile
+              ? 'translateY(-18px)'
+              : 'translateY(0)',
             transition: 'opacity 0.4s ease, transform 0.4s ease',
             pointerEvents: 'none',
           }}
@@ -232,7 +235,7 @@ export default function SatelliteTimeline() {
           <h2
             style={{
               fontFamily: 'var(--font-serif)',
-              fontSize: isMobile ? 'clamp(1.75rem, 5.2vw, 2.25rem)' : 'clamp(1.85rem, 3.2vw, 2.75rem)',
+              fontSize: isMobile ? 'clamp(1.65rem, 4.8vw, 2.15rem)' : 'clamp(1.85rem, 3.2vw, 2.75rem)',
               fontWeight: 400,
               color: '#ffffff',
               fontStyle: 'normal',
@@ -256,7 +259,7 @@ export default function SatelliteTimeline() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            minHeight: isMobile ? '200px' : '260px',
+            minHeight: isMobile ? '280px' : '260px',
             pointerEvents: 'none',
           }}
         >

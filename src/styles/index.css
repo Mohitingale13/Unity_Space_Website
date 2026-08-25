@@ -220,7 +220,24 @@ button:active, .btn:active, [role="button"]:active {
   .timeline-stage-grid {
     flex-direction: column;
     align-items: center;
-    gap: 1.75rem;
+    gap: 1.15rem;
+  }
+  .timeline-giant-number {
+    font-size: clamp(2.6rem, 8vw, 3.5rem) !important;
+    line-height: 1.05;
+  }
+  .timeline-label {
+    font-size: 1.05rem !important;
+    margin-bottom: 0.2rem !important;
+  }
+  .timeline-sub-label {
+    font-size: 1.05rem !important;
+    margin: 0.2rem 0 !important;
+  }
+  .timeline-desc {
+    font-size: 0.92rem !important;
+    margin-top: 0.35rem !important;
+    max-width: 320px !important;
   }
 }
 
