@@ -1,120 +1,114 @@
 # Unity Space — Aerospace Engineering & Student Rocketry Platform
 
 > **"Turning Curiosity Into Aerospace."**  
-> An elite, high-performance aerospace brand web platform for **Unity Space**, student-led aerospace engineering and rocketry organization at **SVPM College of Engineering Malegaon(bk) Baramati**.
+> An interactive web platform for **Unity Space**, a student-led aerospace engineering and rocketry team at **SVPM College of Engineering Malegaon(bk), Baramati**.
 
 ---
 
-## 🚀 Overview & Brand Architecture
+## 🚀 Overview
 
-The Unity Space web platform is designed as an authentic aerospace technology experience (**"NASA × Modern Aerospace Startup × Premium Design Studio"**). It transitions the student organization into a continuous, interactive storytelling journey:
+The Unity Space web platform is an interactive digital experience built with modern web technologies, combining aerospace storytelling, real-time 3D visuals, and smooth interactive physics.
 
 ```
-01 / IDENTITY      → TURNING CURIOSITY INTO AEROSPACE
-02 / MISSION       → WE DON'T JUST LOOK UP. WE BUILD TOWARD IT.
-03 / PROJECTS      → LOOKING BACK, MOVING FORWARD.
-04 / TEAM          → THE PEOPLE BEHIND THE MISSION.
-05 / INSIGHTS      → WHY WE LOOK UP (TECHNICAL PUBLICATIONS).
-06 / SPONSORSHIP   → HELP US REACH SPACE (TRANSMISSION PROTOCOL).
+01 / IDENTITY      → Turning Curiosity into Aerospace
+02 / TIMELINE      → In a Nutshell: Satellite Launches (1957 – 2030)
+03 / MISSION       → We Don't Just Look Up. We Build Toward It.
+04 / PROJECTS      → Flight & Engineering Archive
+05 / TEAM          → The People Behind the Mission
+06 / INSIGHTS      → Why We Look Up (Technical Publications)
+07 / SPONSORSHIP   → Help Us Reach Space (Transmission Protocol)
 ```
 
 ---
 
-## ⚡ Tech Stack & Engineering Highlights
+## ✨ Key Highlights
 
-| Technology | Purpose |
-| :--- | :--- |
-| **React 19** | Modular UI architecture and state orchestration |
-| **Vite 8** | Blazingly fast build tool and HMR development server |
-| **Three.js** | 3D procedural orbital wireframe and spacecraft gyroscope |
-| **HTML5 Canvas** | 3-tier parallax starfield with dynamic mouse tracking |
-| **Framer Motion** | iOS-style Dynamic Island navigation and tactile spring physics |
-| **Lenis** | Smooth inertial scroll behavior across all narrative sections |
-| **Vanilla CSS Tokens** | Zero-framework, strict design token system with glassmorphism |
-| **Lucide React** | Scalable aerospace telemetry and interface icons |
+### 🛰️ 1. Interactive 3D Satellite Launch Timeline
+- **3D Morphing Celestial Sphere**: Real-time Three.js particle system with 9,800+ starlight particles that gradually condense from deep space into a 3D Fibonacci planet sphere as you scroll through historical launch decades (1957 to 2030).
+- **Limb Brightening & Text Clarity**: Dense glowing outer silhouette that defines the sphere, paired with subtle interior density so typography remains crystal-clear.
+- **Synchronous Progress Tracking**: Real-time scrubber notch with synchronous yellow filling and milestone telemetry cards.
 
----
+### 🧭 2. Frosted Glass Morphing Navigation
+- **Translucent Frosted Navbar**: Translucent white glass navbar (`backdrop-filter: blur(28px)`) with subtle refraction borders.
+- **Dynamic Floating Pill Buttons**: Morphs into floating glass pills on scroll, with smooth spring-physics active indicators.
 
-## 🌟 Key Features
+### 🛸 3. Alternating Scroll-Driven Hardware Gallery
+- **Bi-Directional Scroll Stream**: Viewport-linked scroll interpolation driving Row 1 (left-to-right) and Row 2 (right-to-left) with Framer Motion spring physics.
+- **Interactive Drag Gestures**: Full horizontal touch and pointer drag support (`drag="x"`) with momentum and spring boundaries.
 
-### 🌌 1. Multi-Tier Atmospheric Depth System
-- **3-Tier Parallax Starfield (`StarfieldCanvas.jsx`)**: HTML5 Canvas particle system dividing stars into Far (`0.03x`), Mid (`0.10x`), and Near (`0.25x`) parallax depths with responsive mouse interpolation. Automatically throttled on mobile screens (`70` vs `200` particles).
-- **Nebula Glow & Filmic Texture (`NebulaGlow.jsx`, `GrainOverlay.jsx`)**: Ambient cyan and nebula violet radial gradient glow paired with a `0.028` opacity fractal noise layer to eliminate digital color banding.
-- **Precision Aerospace Cursor (`CustomCursor.jsx`)**:
-  - **Cruise State**: Glowing neon cyan aerodynamic dart (`#7fead8`) with live `(x, y)` telemetry coordinates.
-  - **Ignition State**: Morphs to lavender-purple (`#9d88f6`) and ignites an animated multi-layer **rocket thruster fire plume** when hovering over interactive elements.
-  - Automatically disabled on touch/mobile devices via `@media (pointer: fine)`.
-
-### 🧭 2. Dynamic Floating Pill Navigation
-- **At Starting**: Proper full-width frosted glass header bar.
-- **On Scroll**: Smoothly dissolves the background bar and unlocks into discrete **floating glass pill buttons** with individual frosted backgrounds and glowing borders.
-- **iOS-Grade Active Capsule (`layoutId="activeNavIndicator"`)**: The active indicator physically glides and stretches across buttons with organic spring inertia.
-
-### 🛰️ 3. Interactive 3D Orbital Scene
-- Real-time procedural icosahedron core with dual precession gyro rings and orbital satellite nodes.
-- Smooth mouse parallax tracking with automatic fallback support and touch-safe `touchAction: 'pan-y'` on mobile devices.
-
-### 📊 4. Authentic Mission Telemetry & Projects Archive
-- **Project 01 (Past)**: *Looking Back, Moving Forward*
-- **Project 02 (Present)**: *Building Today, Launching Tomorrow*
-- **Mission Trajectory Benchmark**: Multi-stage telemetry selector (*Stage 01 Static Test → Stage 02 Active Flight → Stage 03 Apogee*).
-- **Hardware Telemetry Gallery**: Horizontal momentum touch-swipe gallery with GPU-accelerated `translate3d` and lazy loading.
-
-### 👥 5. Elevated Team & Subteam Architecture
-- Authentic 8-member roster (*Aarav Mehta, Ananya Rao, Rohan Shah, Ishita Verma, Kabir Singh, Meera Nair, Arjun Patel, Diya Kapoor*) with interactive tilt cards and subteam filtering:
-  - **Engineering & Flight**: Propulsion, Avionics, Airframe, Payload.
-  - **Research & Outreach**: Research, Community, Scientific Media.
-
-### 📡 6. Transmission Dispatch Protocol
-- Clean simulated transmission dispatch with email fallback to `unityspace70@gmail.com`.
-- Institutional acknowledgment of **SVPM College of Engineering Malegaon(bk) Baramati** as the Host Institution and Official Supporter.
+### 🌌 4. Atmospheric Space Depth System
+- **Micro-Dot Parallax Starfield**: Canvas-driven starfield with delicate pinprick stars and gentle parallax depth.
+- **Feathered Earth Horizon**: Scroll-responsive Earth atmosphere horizon with curved radial mask feathering.
+- **Aerospace Telemetry Cursor**: Aerodynamic dart cursor with real-time screen coordinates and rocket thruster ignition effects on hover.
 
 ---
 
-## 📁 Repository Structure
+## 🛠️ Tech Stack
+
+- **Core**: React 19, JavaScript (ESNext), HTML5
+- **Build Tool**: Vite 8
+- **3D Graphics & Canvas**: Three.js (WebGL), HTML5 Canvas
+- **Motion & Physics**: Framer Motion, Lenis Smooth Scroll
+- **Styling**: Vanilla CSS Design Tokens (Glassmorphism, CSS Variables)
+- **Icons**: Lucide React
+
+---
+
+## 🏁 Getting Started
+
+### Prerequisites
+- **Node.js**: v18.0 or higher
+- **npm** or **yarn** / **pnpm**
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/SakshiRajendraShinde/Unity_Space_Website.git
+   cd Unity_Space_Website
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+4. **Build for production:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 📁 Project Structure
 
 ```
 Unity_Space_Website/
 ├── public/
-│   ├── images/
-│   │   ├── team/              # Team member portraits
-│   │   ├── projects/          # Mission photography
-│   │   ├── articles/          # Publication assets
-│   │   └── supporters/        # Institutional emblems
-│   ├── models/                # Optional CAD/GLB models
-│   ├── videos/                # Testing footage
-│   └── favicon.svg            # Aerospace brand favicon
+│   ├── images/                # High-res assets & textures
+│   └── favicon.svg            # Brand icon
 │
 ├── src/
 │   ├── components/
-│   │   ├── atmosphere/        # Starfield, Nebula, Grain, CustomCursor
-│   │   ├── navigation/        # Dynamic Floating Navbar & Mobile Menu
-│   │   ├── hero/              # Hero typography, 3D SpacecraftScene, MagneticButton
-│   │   ├── mission/           # Mission statement & Subteam architecture
-│   │   ├── projects/          # ProjectsShowcase, MissionTrajectory, ProjectModal
-│   │   ├── team/              # TeamShowcase with subteam filter tabs
-│   │   ├── insights/          # Editorial publication layout & Article Reader Modal
-│   │   ├── sponsorship/       # SponsorHero, Tiers, TransmissionForm
-│   │   └── footer/            # Host institution credits & social channels
+│   │   ├── atmosphere/        # Starfield, Nebula Glow, Custom Cursor
+│   │   ├── navigation/        # Frosted Glass Navbar & Mobile Menu
+│   │   ├── hero/              # Hero, Satellite Timeline, 3D Particle Dome
+│   │   ├── mission/           # Mission Statement & Subteams
+│   │   ├── projects/          # Projects Showcase & Bi-directional Gallery
+│   │   ├── team/              # Team Showcase & Member Cards
+│   │   ├── insights/          # Technical Insights & Article Modals
+│   │   └── sponsorship/       # Sponsorship Tiers & Contact Form
 │   │
-│   ├── data/
-│   │   ├── assetsManifest.js  # Asset availability ledger & fallback rules
-│   │   ├── teamData.js        # 8 verified team members & leadership roles
-│   │   ├── subteamsData.js    # Core subteams & focus disciplines
-│   │   ├── projectsData.js    # Mission archives & hardware gallery
-│   │   ├── articlesData.js    # 4 technical insights
-│   │   └── supportersData.js  # SVPM COE details & mission tiers
-│   │
-│   ├── styles/
-│   │   ├── tokens.css         # Design tokens: colors, radii, glass variables
-│   │   ├── typography.css     # Space Grotesk, Inter, JetBrains Mono
-│   │   ├── animations.css     # Keyframes & GPU translate utilities
-│   │   └── index.css          # Global resets, Lenis root, mobile guardrails
-│   │
-│   ├── pages/
-│   │   └── Home.jsx           # Continuous master storytelling page
-│   ├── App.jsx                # Router, Lenis smooth scroll & Atmosphere provider
-│   └── main.jsx               # React DOM root mounting
+│   ├── data/                  # Content data (projects, team, articles)
+│   ├── styles/                # CSS design system (tokens, typography, animations)
+│   ├── App.jsx                # Main application wrapper
+│   └── main.jsx               # Entry point
 │
 ├── package.json
 └── vite.config.js
@@ -122,84 +116,12 @@ Unity_Space_Website/
 
 ---
 
-## 🛠️ Development & Local Run
+## 👥 Institution & Credits
 
-### 1. Install Dependencies
-```bash
-npm install
-```
-
-### 2. Start Development Server
-```bash
-npm run dev
-```
-Open [http://localhost:5173/](http://localhost:5173/) or [http://localhost:5174/](http://localhost:5174/) in your browser.
-
-### 3. Production Build
-```bash
-npm run build
-```
+- **Organization**: Unity Space
+- **Host Institution**: SVPM College of Engineering Malegaon(bk), Baramati
+- **Contact**: `unityspace70@gmail.com`
 
 ---
 
-## 🚀 Beginner's Guide: How to Push Code to GitHub
-
-If you are new to Git and GitHub, here is the complete step-by-step guide to saving and pushing your changes to the remote repository.
-
-### Step 1: Open Your Terminal
-Open the project terminal in VS Code, Antigravity IDE, PowerShell, or Command Prompt inside the `Unity_Space_Website` directory.
-
-### Step 2: Check Modified Files
-```bash
-git status
-```
-*This command displays all the files you have created, modified, or deleted.*
-
-### Step 3: Stage All Changes
-```bash
-git add .
-```
-*The `.` stages all modified and new files ready to be committed.*
-
-### Step 4: Commit with a Descriptive Message
-```bash
-git commit -m "feat: migrate to modern React 19 + Vite aerospace platform with 3D scene & floating nav"
-```
-
-### Step 5: Push Changes to GitHub
-```bash
-git push origin main
-```
-*This sends your local commits to the `main` branch on GitHub.*
-
----
-
-### 💡 Common Git Commands for Collaboration
-
-- **Pull Latest Updates from GitHub**:
-  ```bash
-  git pull origin main
-  ```
-- **Create & Switch to a New Branch**:
-  ```bash
-  git checkout -b feature/new-component
-  ```
-- **View Commit History**:
-  ```bash
-  git log --oneline -n 5
-  ```
-
----
-
-## 🏛️ Host Institution & Acknowledgments
-
-**Presented by Unity Space Club**  
-**Host Institution & Official Supporter**:  
-**SVPM College of Engineering**, Malegaon(bk) Baramati, Maharashtra, India.
-
-- **Direct Inquiries**: `unityspace70@gmail.com`
-- **Social Telemetry**: [Instagram](https://www.instagram.com/unity_space_/) • [YouTube](https://www.youtube.com/@UNITYSPACE-70) • [Twitter / X](https://x.com/UnitySpaceIN) • [LinkedIn](https://linkedin.com/)
-
----
-
-© 2026 Unity Space. Exploring today. Inspiring tomorrow.
+*Turning Curiosity Into Aerospace.* 🚀
