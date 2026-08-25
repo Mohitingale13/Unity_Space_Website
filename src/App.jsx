@@ -1,30 +1,28 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
-
 import StarfieldCanvas from './components/atmosphere/StarfieldCanvas';
 import NebulaGlow from './components/atmosphere/NebulaGlow';
 import GrainOverlay from './components/atmosphere/GrainOverlay';
 import CustomCursor from './components/atmosphere/CustomCursor';
+import TopBlurVignette from './components/atmosphere/TopBlurVignette';
+import TouchFeedback from './components/atmosphere/TouchFeedback';
 import Navbar from './components/navigation/Navbar';
 import Footer from './components/footer/Footer';
 import Home from './pages/Home';
 
-import './styles/index.css';
-
 export default function App() {
   useEffect(() => {
-    // Media query check for reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    // Initialize smooth scrolling with Lenis
+    // Initialize Lenis smooth inertial scrolling
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+      infinite: false,
     });
 
     function raf(time) {
@@ -32,10 +30,10 @@ export default function App() {
       requestAnimationFrame(raf);
     }
 
-    const rafId = requestAnimationFrame(raf);
+    const animationFrameId = requestAnimationFrame(raf);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(animationFrameId);
       lenis.destroy();
     };
   }, []);
@@ -43,29 +41,29 @@ export default function App() {
   return (
     <Router>
       <div className="aerospace-viewport">
-        {/* Layer 1-3: Multi-Tier Atmospheric Canvas & Overlays */}
+        {/* Global Atmospheric Layers */}
         <StarfieldCanvas />
         <NebulaGlow />
         <GrainOverlay />
         <CustomCursor />
+        
+        {/* Progressive Top Depth-of-Field Blur Vignette */}
+        <TopBlurVignette />
 
-        {/* Global Floating Glass Capsule Header */}
+        {/* Global Aerospace Touch & Haptic Feedback Engine */}
+        <TouchFeedback />
+
+        {/* Dynamic Navigation */}
         <Navbar />
 
-        {/* Route Outlets */}
-        <div style={{ position: 'relative', zIndex: 2 }}>
+        {/* Main Content Viewport */}
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/mission" element={<Home />} />
-            <Route path="/projects" element={<Home />} />
-            <Route path="/team" element={<Home />} />
-            <Route path="/insights" element={<Home />} />
-            <Route path="/sponsors" element={<Home />} />
-            <Route path="/contact" element={<Home />} />
           </Routes>
-        </div>
+        </main>
 
-        {/* Global Footer */}
+        {/* Institutional Footer */}
         <Footer />
       </div>
     </Router>

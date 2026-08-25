@@ -1,10 +1,13 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * 3-Tier Canvas Parallax Starfield
- * Layer 1 (Far): Slow, tiny points (0.05x parallax)
- * Layer 2 (Mid): Medium brightness points (0.15x parallax)
- * Layer 3 (Near): Bright, twinkling points (0.35x parallax)
+ * Celestial Deep Space Twinkling Starfield Engine
+ * Ultra-delicate tiny pinprick starlight dots:
+ * - Micro star sizes (0.25px - 0.75px) for sharp, refined stardust
+ * - Individual realistic blinking, breathing, and vanishing cycles
+ * - Zero fuzzy glow halos for maximum crispness
+ * - Rich star density across deep celestial midnight navy
+ * - Tab visibility detection for zero CPU/GPU overhead when unfocused
  */
 export default function StarfieldCanvas() {
   const canvasRef = useRef(null);
@@ -12,30 +15,203 @@ export default function StarfieldCanvas() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
 
-    let animationFrameId;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let animationFrameId = null;
+    let isTabVisible = true;
+
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 250 : 580;
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    const isMobile = window.innerWidth < 768;
-    const starCount = isMobile ? 70 : 200;
+    // Star data collection with ultra-tiny pinprick radii
+    const stars = [];
+    for (let i = 0; i < starCount; i++) {
+      const tier = Math.random();
+      let size, maxAlpha, twinkleSpeed, exponent, depth, color;
 
-    let mouseX = width / 2;
-    let mouseY = height / 2;
-    let targetMouseX = mouseX;
-    let targetMouseY = mouseY;
+      if (tier < 0.80) {
+        // 80% Ultra-micro starlight dots (0.25px - 0.5px)
+        size = Math.random() * 0.25 + 0.25;
+        maxAlpha = Math.random() * 0.4 + 0.35;
+        twinkleSpeed = Math.random() * 1.5 + 0.6;
+        exponent = 1.6;
+        depth = 0.02;
+      } else if (tier < 0.96) {
+        // 16% Small starlight dots (0.45px - 0.7px)
+        size = Math.random() * 0.25 + 0.45;
+        maxAlpha = Math.random() * 0.35 + 0.55;
+        twinkleSpeed = Math.random() * 1.8 + 0.8;
+        exponent = 1.3;
+        depth = 0.05;
+      } else {
+        // 4% Subtle accent dots (0.7px - 0.9px max)
+        size = Math.random() * 0.2 + 0.7;
+        maxAlpha = Math.random() * 0.25 + 0.75;
+        twinkleSpeed = Math.random() * 2.2 + 1.2;
+        exponent = 1.0;
+        depth = 0.1;
+      }
 
-    const handleMouseMove = (e) => {
-      targetMouseX = e.clientX;
-      targetMouseY = e.clientY;
+      // Star hues: Diamond White, Icy Pale Blue, Soft Warm Gold
+      const hueChoice = Math.random();
+      if (hueChoice < 0.72) {
+        color = '255, 255, 255';
+      } else if (hueChoice < 0.88) {
+        color = '220, 238, 255';
+      } else {
+        color = '255, 248, 230';
+      }
+
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size,
+        maxAlpha,
+        twinkleSpeed,
+        exponent,
+        depth,
+        color,
+        phase: Math.random() * Math.PI * 2,
+        driftSpeedY: (Math.random() - 0.5) * 0.02 - 0.015,
+        driftSpeedX: (Math.random() - 0.5) * 0.01,
+        canRelocate: Math.random() > 0.35,
+      });
+    }
+
+    // Shooting stars queue
+    let shootingStar = null;
+    let nextShootingStarTime = 5 + Math.random() * 7;
+
+    // Mouse parallax tracking (Desktop only)
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
+
+    const handlePointerMove = (e) => {
+      if (isMobile) return;
+      targetMouseX = (e.clientX - width / 2) * 0.035;
+      targetMouseY = (e.clientY - height / 2) * 0.035;
     };
 
     if (!isMobile) {
-      window.addEventListener('mousemove', handleMouseMove, { passive: true });
+      window.addEventListener('pointermove', handlePointerMove, { passive: true });
     }
 
+    // Visibility API (Sleep when tab is backgrounded)
+    const handleVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible && !animationFrameId) {
+        render();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    let lastTimestamp = performance.now();
+    let totalTime = 0;
+
+    const render = (now = performance.now()) => {
+      if (!isTabVisible) {
+        animationFrameId = null;
+        return;
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+      const dt = Math.min(0.1, (now - lastTimestamp) * 0.001);
+      lastTimestamp = now;
+      totalTime += dt;
+
+      if (!isMobile) {
+        mouseX += (targetMouseX - mouseX) * 0.05;
+        mouseY += (targetMouseY - mouseY) * 0.05;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Render Starfield as crisp tiny dots
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+
+        // Micro cosmic drift
+        star.y += star.driftSpeedY;
+        star.x += star.driftSpeedX;
+
+        if (star.y < -10) star.y = height + 10;
+        if (star.y > height + 10) star.y = -10;
+        if (star.x < -10) star.x = width + 10;
+        if (star.x > width + 10) star.x = -10;
+
+        // Vanishing & Blinking formula
+        const wave = Math.sin(totalTime * star.twinkleSpeed + star.phase);
+        
+        let alpha = 0;
+        if (wave > 0) {
+          alpha = Math.pow(wave, star.exponent) * star.maxAlpha;
+        } else if (star.canRelocate && wave < -0.98) {
+          // Relocate star randomly while it is completely vanished
+          star.x = Math.random() * width;
+          star.y = Math.random() * height;
+        }
+
+        if (alpha > 0.01) {
+          const renderX = isMobile ? star.x : star.x + mouseX * star.depth;
+          const renderY = isMobile ? star.y : star.y + mouseY * star.depth;
+
+          ctx.fillStyle = `rgba(${star.color}, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(renderX, renderY, star.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Handle subtle shooting stars
+      if (!shootingStar && totalTime > nextShootingStarTime) {
+        shootingStar = {
+          x: Math.random() * (width * 0.8) + width * 0.1,
+          y: Math.random() * (height * 0.4),
+          length: Math.random() * 50 + 40,
+          speed: Math.random() * 400 + 300,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
+          progress: 0,
+          duration: Math.random() * 0.45 + 0.35,
+        };
+      }
+
+      if (shootingStar) {
+        shootingStar.progress += dt / shootingStar.duration;
+        const p = shootingStar.progress;
+
+        if (p >= 1) {
+          shootingStar = null;
+          nextShootingStarTime = totalTime + 6 + Math.random() * 9;
+        } else {
+          const fade = Math.sin(p * Math.PI);
+          const startX = shootingStar.x + Math.cos(shootingStar.angle) * shootingStar.speed * p;
+          const startY = shootingStar.y + Math.sin(shootingStar.angle) * shootingStar.speed * p;
+          const endX = startX - Math.cos(shootingStar.angle) * shootingStar.length * fade;
+          const endY = startY - Math.sin(shootingStar.angle) * shootingStar.length * fade;
+
+          const grad = ctx.createLinearGradient(startX, startY, endX, endY);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${fade * 0.8})`);
+          grad.addColorStop(0.3, `rgba(180, 220, 255, ${fade * 0.4})`);
+          grad.addColorStop(1, 'rgba(180, 220, 255, 0)');
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.0;
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(endX, endY);
+          ctx.stroke();
+        }
+      }
+    };
+
+    render();
+
+    // Resize Handler
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
@@ -43,69 +219,11 @@ export default function StarfieldCanvas() {
 
     window.addEventListener('resize', handleResize);
 
-    // Initialize 3 tiers of stars
-    const stars = Array.from({ length: starCount }, () => {
-      const tier = Math.random() < 0.6 ? 1 : Math.random() < 0.85 ? 2 : 3;
-      return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        baseX: Math.random() * width,
-        baseY: Math.random() * height,
-        radius: tier === 1 ? Math.random() * 0.8 + 0.4 : tier === 2 ? Math.random() * 1.2 + 0.8 : Math.random() * 1.6 + 1.2,
-        alpha: tier === 1 ? Math.random() * 0.4 + 0.2 : tier === 2 ? Math.random() * 0.5 + 0.4 : Math.random() * 0.6 + 0.4,
-        twinkleSpeed: Math.random() * 0.02 + 0.005,
-        twinkleOffset: Math.random() * Math.PI * 2,
-        tier,
-        parallaxSpeed: tier === 1 ? 0.03 : tier === 2 ? 0.1 : 0.25
-      };
-    });
-
-    let tick = 0;
-
-    const render = () => {
-      tick++;
-      // Smooth mouse interpolation
-      mouseX += (targetMouseX - mouseX) * 0.05;
-      mouseY += (targetMouseY - mouseY) * 0.05;
-
-      const offsetX = (mouseX - width / 2) / (width / 2);
-      const offsetY = (mouseY - height / 2) / (height / 2);
-
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < stars.length; i++) {
-        const star = stars[i];
-        
-        // Calculate parallax shift
-        const posX = (star.baseX - offsetX * star.parallaxSpeed * 60 + width) % width;
-        const posY = (star.baseY - offsetY * star.parallaxSpeed * 60 + height) % height;
-
-        // Twinkle factor
-        const currentAlpha = Math.max(0.1, star.alpha + Math.sin(tick * star.twinkleSpeed + star.twinkleOffset) * 0.25);
-
-        ctx.fillStyle = star.tier === 3 ? `rgba(180, 240, 255, ${currentAlpha})` : `rgba(245, 247, 250, ${currentAlpha})`;
-        ctx.beginPath();
-        ctx.arc(posX, posY, star.radius, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Subtle glow for near stars
-        if (star.tier === 3) {
-          ctx.fillStyle = `rgba(102, 230, 255, ${currentAlpha * 0.3})`;
-          ctx.beginPath();
-          ctx.arc(posX, posY, star.radius * 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (!isMobile) window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

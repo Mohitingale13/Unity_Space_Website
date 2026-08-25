@@ -2,6 +2,7 @@ import { ArrowRight, Terminal, Radio } from 'lucide-react';
 import { motion } from 'framer-motion';
 import SpacecraftScene from './SpacecraftScene/SpacecraftScene';
 import MagneticButton from './MagneticButton';
+import HeroEarthBackground from './HeroEarthBackground';
 
 export default function Hero() {
   return (
@@ -12,23 +13,27 @@ export default function Hero() {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        paddingTop: 'calc(var(--header-height-expanded) + 1.5rem)',
-        paddingBottom: '3.5rem',
-        overflow: 'hidden',
+        background: 'transparent',
+        paddingTop: 'calc(var(--header-height-expanded) + 0.5rem)',
+        paddingBottom: '2.5rem',
+        overflow: 'visible',
       }}
       aria-label="Unity Space Hero Showcase"
     >
+      {/* Scroll-Driven Scaling & Vanishing Earth Planet Background */}
+      <HeroEarthBackground />
+
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
             alignItems: 'center',
-            gap: 'clamp(2rem, 5vw, 3.5rem)',
+            gap: 'clamp(1.5rem, 4vw, 3rem)',
           }}
         >
           {/* Typographic & Brand Showpiece */}
-          <div style={{ maxWidth: '680px' }}>
+          <div style={{ maxWidth: '620px' }}>
             {/* Mission Identifier Badge */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -39,7 +44,7 @@ export default function Hero() {
                 flexWrap: 'wrap',
                 alignItems: 'center',
                 gap: '0.65rem',
-                marginBottom: '1.5rem',
+                marginBottom: '1rem',
               }}
             >
               <div className="mono-tag">
@@ -51,16 +56,17 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* Massive Display Title */}
+            {/* Well-Proportioned Display Title */}
             <motion.h1
-              initial={{ opacity: 0, y: 25 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               style={{
-                fontSize: 'clamp(2.35rem, 8.5vw, 6rem)',
-                marginBottom: '1.25rem',
+                fontSize: 'clamp(2rem, 4.2vw, 3.8rem)',
+                marginBottom: '1rem',
                 textTransform: 'uppercase',
-                lineHeight: 1.05,
+                lineHeight: 1.1,
+                letterSpacing: '-0.02em',
               }}
             >
               TURNING<br />
@@ -70,23 +76,23 @@ export default function Hero() {
 
             {/* Sub-headline / Mission Narrative */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               style={{
-                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                fontSize: 'clamp(0.95rem, 1.2vw, 1.1rem)',
                 color: 'var(--text-secondary)',
-                marginBottom: '2rem',
+                marginBottom: '1.75rem',
                 lineHeight: 1.6,
-                maxWidth: '560px',
+                maxWidth: '520px',
               }}
             >
               Pioneering student-led rocketry, flight systems, and multidisciplinary aerospace research from SVPM College of Engineering.
             </motion.p>
 
-            {/* Mobile-Friendly Action Group (Stacked / Flexible on Mobile) */}
+            {/* Action Group */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               style={{
@@ -97,12 +103,12 @@ export default function Hero() {
               }}
               className="hero-btn-group"
             >
-              <MagneticButton href="#mission" className="btn btn-primary" style={{ flex: '1 1 auto' }}>
+              <MagneticButton href="#mission" className="btn btn-primary">
                 <span>EXPLORE THE MISSION</span>
                 <ArrowRight size={16} />
               </MagneticButton>
 
-              <MagneticButton href="#projects" className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
+              <MagneticButton href="#projects" className="btn btn-secondary">
                 <Terminal size={15} style={{ color: 'var(--accent)' }} />
                 <span>FLIGHT ARCHIVE</span>
               </MagneticButton>
@@ -112,12 +118,12 @@ export default function Hero() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.45 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: 'clamp(1rem, 4vw, 2.5rem)',
-                marginTop: '2.5rem',
+                gap: 'clamp(1rem, 3.5vw, 2.5rem)',
+                marginTop: '2rem',
                 paddingTop: '1.25rem',
                 borderTop: '1px solid var(--glass-border)',
               }}
@@ -137,13 +143,13 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Interactive 3D Orbital Scene (Non-blocking touch) */}
+          {/* Interactive 3D Orbital Scene */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
+            transition={{ duration: 0.9, delay: 0.2 }}
             style={{
-              height: 'clamp(280px, 45vw, 520px)',
+              height: 'clamp(280px, 38vw, 460px)',
               position: 'relative',
               display: 'flex',
               alignItems: 'center',

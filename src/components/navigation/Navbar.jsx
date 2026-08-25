@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Rocket, Menu, X, Compass, Radio, Target, Terminal, Users, BookOpen, HeartHandshake, ArrowUp } from 'lucide-react';
+import { Rocket, Menu, X, Compass, Radio, Target, Terminal, Users, BookOpen, HeartHandshake } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * Modern Frosted White Glass Navbar
+ * - Translucent white glass aesthetics with deep backdrop blur
+ * - Luminous white refraction borders & specular top highlights
+ * - Morphing top capsule to floating frosted glass pills on scroll
+ * - High-contrast crisp white typography with smooth hover & active animations
+ */
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -60,11 +67,6 @@ export default function Navbar() {
     { id: 'sponsors', label: 'Support', path: '/#sponsors', icon: HeartHandshake },
   ];
 
-  const scrollToTop = (e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <>
       <header
@@ -89,9 +91,7 @@ export default function Navbar() {
             minHeight: '48px',
           }}
         >
-          {/* 1. Dynamic Morphing Top Glass Background Bar
-              - Expanded & visible at the top
-              - Smoothly scales down and dissolves on scroll */}
+          {/* 1. Dynamic Morphing Top Translucent White Glass Capsule Bar */}
           <motion.div
             initial={false}
             animate={{
@@ -112,19 +112,19 @@ export default function Navbar() {
               left: 'clamp(1rem, 4vw, 2.5rem)',
               right: 'clamp(1rem, 4vw, 2.5rem)',
               bottom: 0,
-              background: 'rgba(10, 12, 18, 0.75)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.12)',
+              backdropFilter: 'blur(28px) saturate(190%)',
+              WebkitBackdropFilter: 'blur(28px) saturate(190%)',
+              border: '1px solid rgba(255, 255, 255, 0.28)',
               borderRadius: 'var(--radius-pill)',
-              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(102, 230, 255, 0.06)',
+              boxShadow: '0 16px 45px rgba(0, 0, 0, 0.35), inset 0 1px 1.5px rgba(255, 255, 255, 0.45), 0 0 25px rgba(255, 255, 255, 0.08)',
               pointerEvents: 'none',
               zIndex: 0,
             }}
             aria-hidden="true"
           />
 
-          {/* 2. Brand Anchor (Left) */}
+          {/* 2. Brand Anchor (Left) - Visible only at the top */}
           <motion.div
             animate={{
               opacity: isScrolled ? 0 : 1,
@@ -149,7 +149,7 @@ export default function Navbar() {
                 alignItems: 'center',
                 gap: '0.75rem',
                 textDecoration: 'none',
-                color: 'var(--text-primary)',
+                color: '#ffffff',
               }}
             >
               <motion.div
@@ -159,13 +159,13 @@ export default function Navbar() {
                   width: '36px',
                   height: '36px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(102, 230, 255, 0.25), rgba(139, 124, 255, 0.25))',
-                  border: '1px solid rgba(102, 230, 255, 0.45)',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.15))',
+                  border: '1px solid rgba(255, 255, 255, 0.5)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--accent)',
-                  boxShadow: '0 0 16px rgba(102, 230, 255, 0.25)',
+                  color: '#ffffff',
+                  boxShadow: '0 0 16px rgba(255, 255, 255, 0.25)',
                 }}
               >
                 <Rocket size={18} />
@@ -178,6 +178,8 @@ export default function Navbar() {
                     fontSize: '1.15rem',
                     letterSpacing: '-0.02em',
                     lineHeight: 1.1,
+                    color: '#ffffff',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.4)',
                   }}
                 >
                   UNITY SPACE
@@ -186,7 +188,7 @@ export default function Navbar() {
                   style={{
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.62rem',
-                    color: 'var(--accent)',
+                    color: 'rgba(255, 255, 255, 0.85)',
                     letterSpacing: '0.1em',
                   }}
                 >
@@ -196,7 +198,7 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          {/* 3. Center Navigation Track with Highly Visible Sliding Capsule & Morphing Buttons */}
+          {/* 3. Center Navigation Track with White Frosted Glass Floating Pills */}
           <motion.div
             layout
             transition={{ type: 'spring', stiffness: 350, damping: 28 }}
@@ -212,46 +214,8 @@ export default function Navbar() {
             className="desktop-links"
             onMouseLeave={() => setHoveredSection(null)}
           >
-            {/* Scrolled Return-to-Top Mini Rocket Pill Button */}
-            <AnimatePresence>
-              {isScrolled && (
-                <motion.a
-                  initial={{ scale: 0, opacity: 0, x: -15 }}
-                  animate={{ scale: 1, opacity: 1, x: 0 }}
-                  exit={{ scale: 0, opacity: 0, x: -15 }}
-                  transition={{ type: 'spring', stiffness: 450, damping: 25 }}
-                  whileHover={{ scale: 1.08, y: -2 }}
-                  whileTap={{ scale: 0.92 }}
-                  href="#home"
-                  onClick={scrollToTop}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: '0.55rem 0.95rem',
-                    borderRadius: 'var(--radius-pill)',
-                    background: 'rgba(10, 12, 18, 0.88)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(102, 230, 255, 0.45)',
-                    color: 'var(--accent)',
-                    textDecoration: 'none',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.76rem',
-                    fontWeight: 600,
-                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(102, 230, 255, 0.2)',
-                    cursor: 'pointer',
-                  }}
-                  title="Return to top"
-                >
-                  <Rocket size={14} />
-                  <span className="dock-logo-text">UNITY</span>
-                </motion.a>
-              )}
-            </AnimatePresence>
-
-            {/* Individual Navigation Buttons with Fluid Sliding Indicator */}
-            {navItems.map((item, idx) => {
+            {/* Navigation Buttons */}
+            {navItems.map((item) => {
               const IconComponent = item.icon;
               const isActive = activeSection === item.id;
               const isHovered = hoveredSection === item.id;
@@ -275,31 +239,31 @@ export default function Navbar() {
                     fontFamily: 'var(--font-display)',
                     fontSize: isScrolled ? '0.88rem' : '0.92rem',
                     fontWeight: isActive ? 700 : 500,
-                    color: isActive ? '#ffffff' : isHovered ? 'var(--text-primary)' : isScrolled ? '#c5d0e0' : 'var(--text-secondary)',
-                    // Morphing background: seamless inside top bar -> discrete floating glass pill on scroll
+                    color: isActive ? '#ffffff' : isHovered ? '#ffffff' : isScrolled ? '#f1f5f9' : 'rgba(255, 255, 255, 0.9)',
+                    // Morphing white glass: clean inside top bar -> floating white frosted glass pill on scroll
                     background: isScrolled
                       ? isActive
-                        ? 'rgba(102, 230, 255, 0.24)'
-                        : 'rgba(10, 12, 18, 0.88)'
+                        ? 'rgba(255, 255, 255, 0.28)'
+                        : 'rgba(255, 255, 255, 0.12)'
                       : 'transparent',
-                    backdropFilter: isScrolled ? 'blur(20px)' : 'none',
-                    WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
+                    backdropFilter: isScrolled ? 'blur(24px) saturate(180%)' : 'none',
+                    WebkitBackdropFilter: isScrolled ? 'blur(24px) saturate(180%)' : 'none',
                     border: '1px solid',
                     borderColor: isScrolled
                       ? isActive
-                        ? 'rgba(102, 230, 255, 0.7)'
-                        : 'rgba(255, 255, 255, 0.14)'
+                        ? 'rgba(255, 255, 255, 0.65)'
+                        : 'rgba(255, 255, 255, 0.25)'
                       : 'transparent',
                     boxShadow: isScrolled
                       ? isActive
-                        ? '0 12px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(102, 230, 255, 0.35)'
-                        : '0 10px 30px rgba(0, 0, 0, 0.6)'
+                        ? '0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1.5px rgba(255, 255, 255, 0.55), 0 0 20px rgba(255, 255, 255, 0.2)'
+                        : '0 10px 30px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.25)'
                       : 'none',
                     transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                     zIndex: 1,
                   }}
                 >
-                  {/* Dynamic Sliding Hover Glass Pill */}
+                  {/* Dynamic Sliding Hover White Glass Pill */}
                   {isHovered && !isActive && (
                     <motion.div
                       layoutId="navHoverPill"
@@ -315,8 +279,9 @@ export default function Navbar() {
                         right: 0,
                         bottom: 0,
                         borderRadius: 'var(--radius-pill)',
-                        background: 'rgba(102, 230, 255, 0.08)',
-                        border: '1px solid rgba(102, 230, 255, 0.25)',
+                        background: 'rgba(255, 255, 255, 0.16)',
+                        border: '1px solid rgba(255, 255, 255, 0.4)',
+                        boxShadow: '0 4px 15px rgba(255, 255, 255, 0.1)',
                         zIndex: -1,
                         pointerEvents: 'none',
                       }}
@@ -341,13 +306,13 @@ export default function Navbar() {
                         borderRadius: 'var(--radius-pill)',
                         background: isScrolled
                           ? 'transparent'
-                          : 'linear-gradient(135deg, rgba(102, 230, 255, 0.26), rgba(139, 124, 255, 0.18))',
+                          : 'linear-gradient(135deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.18))',
                         border: isScrolled
                           ? 'none'
-                          : '1px solid rgba(102, 230, 255, 0.75)',
+                          : '1px solid rgba(255, 255, 255, 0.6)',
                         boxShadow: isScrolled
                           ? 'none'
-                          : '0 0 24px rgba(102, 230, 255, 0.4), inset 0 0 14px rgba(102, 230, 255, 0.18)',
+                          : '0 0 22px rgba(255, 255, 255, 0.3), inset 0 1px 1.5px rgba(255, 255, 255, 0.5)',
                         zIndex: -1,
                         pointerEvents: 'none',
                       }}
@@ -364,7 +329,7 @@ export default function Navbar() {
                     <IconComponent
                       size={14}
                       style={{
-                        color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                        color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.8)',
                         transition: 'color 0.2s ease',
                       }}
                     />
@@ -403,31 +368,39 @@ export default function Navbar() {
                 whileTap={{ scale: 0.92 }}
                 href="#sponsors"
                 className="btn btn-capsule"
-                style={{ padding: '0.48rem 1.25rem' }}
+                style={{
+                  padding: '0.48rem 1.25rem',
+                  background: 'rgba(255, 255, 255, 0.16)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.4)',
+                  color: '#ffffff',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.4)',
+                }}
               >
                 <Radio size={12} style={{ color: 'var(--accent-status)' }} />
                 <span>ENGAGE</span>
               </motion.a>
             </motion.div>
 
-            {/* Mobile Toggle Button */}
+            {/* Mobile Toggle Button (Frosted White Glass) */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               style={{
-                background: isScrolled ? 'rgba(10, 12, 18, 0.9)' : 'rgba(16, 18, 26, 0.6)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(102, 230, 255, 0.35)',
+                background: 'rgba(255, 255, 255, 0.16)',
+                backdropFilter: 'blur(24px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+                border: '1px solid rgba(255, 255, 255, 0.35)',
                 borderRadius: 'var(--radius-pill)',
-                color: 'var(--text-primary)',
+                color: '#ffffff',
                 cursor: 'pointer',
                 padding: '0.55rem 0.85rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.6)' : 'none',
+                boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3)' : '0 4px 15px rgba(0, 0, 0, 0.2)',
               }}
               className="mobile-toggle"
               aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
@@ -439,7 +412,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Touch Drawer Navigation */}
+      {/* Mobile Touch Drawer Navigation (Frosted Deep Space Glass) */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -453,9 +426,9 @@ export default function Navbar() {
               left: 0,
               width: '100vw',
               height: '100vh',
-              background: 'rgba(8, 9, 13, 0.97)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
+              background: 'rgba(6, 11, 28, 0.88)',
+              backdropFilter: 'blur(32px) saturate(190%)',
+              WebkitBackdropFilter: 'blur(32px) saturate(190%)',
               zIndex: 999,
               padding: '6rem 2rem 3rem',
               display: 'flex',
@@ -464,7 +437,7 @@ export default function Navbar() {
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <div className="mono-label" style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+              <div className="mono-label" style={{ color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.5rem' }}>
                 NAVIGATION TELEMETRY
               </div>
               {navItems.map((item, idx) => {
@@ -482,34 +455,35 @@ export default function Navbar() {
                     style={{
                       padding: '0.85rem 1.25rem',
                       borderRadius: 'var(--radius-md)',
-                      background: isActive ? 'rgba(102, 230, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                      background: isActive ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.08)',
                       border: '1px solid',
-                      borderColor: isActive ? 'var(--accent)' : 'var(--glass-border)',
+                      borderColor: isActive ? 'rgba(255, 255, 255, 0.6)' : 'rgba(255, 255, 255, 0.18)',
                       fontFamily: 'var(--font-display)',
                       fontSize: '1.35rem',
                       fontWeight: 700,
-                      color: isActive ? 'var(--accent)' : 'var(--text-primary)',
+                      color: '#ffffff',
                       textDecoration: 'none',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      boxShadow: isActive ? '0 8px 25px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4)' : 'none',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <IconComp size={20} style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }} />
+                      <IconComp size={20} style={{ color: isActive ? '#ffffff' : 'rgba(255, 255, 255, 0.7)' }} />
                       <span>{item.label}</span>
                     </div>
-                    <Compass size={18} style={{ color: 'var(--text-muted)' }} />
+                    <Compass size={18} style={{ color: 'rgba(255, 255, 255, 0.6)' }} />
                   </motion.a>
                 );
               })}
             </div>
 
-            <div style={{ paddingTop: '1.5rem', borderTop: '1px solid var(--glass-border)' }}>
-              <div className="mono-label" style={{ marginBottom: '0.35rem', color: 'var(--text-muted)' }}>
+            <div style={{ paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.15)' }}>
+              <div className="mono-label" style={{ marginBottom: '0.35rem', color: 'rgba(255, 255, 255, 0.7)' }}>
                 HOST INSTITUTION
               </div>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
+              <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.85)', margin: 0 }}>
                 SVPM College of Engineering Malegaon(bk) Baramati
               </p>
             </div>
@@ -524,18 +498,12 @@ export default function Navbar() {
         .desktop-only {
           display: none;
         }
-        .dock-logo-text {
-          display: none;
-        }
         @media (min-width: 900px) {
           .desktop-links {
             display: flex !important;
           }
           .desktop-only {
             display: block !important;
-          }
-          .dock-logo-text {
-            display: inline !important;
           }
           .mobile-toggle {
             display: none !important;

@@ -2,179 +2,189 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 /**
- * Three.js Procedural Orbital Spacecraft / Wireframe Node
- * Provides high-performance 60fps 3D visuals with zero external GLB dependencies.
- * Automatically respects mobile viewports and reduced motion preferences.
+ * Three.js Spacecraft Procedural Orbital Wireframe
+ * Mobile GPU Optimized:
+ * - IntersectionObserver: Automatically stops Three.js render loop when scrolled off-screen (0% GPU usage)
+ * - Device Pixel Ratio capped at 1.5 to prevent retina pixel-fill overhead on mobile GPUs
+ * - Low-poly geometry with zero texture memory footprint
  */
 export default function SpacecraftScene() {
-  const mountRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    // Media query check for reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isMobile = window.innerWidth < 768;
+    let isVisible = true;
+    let animationFrameId = null;
 
-    const width = mount.clientWidth;
-    const height = mount.clientHeight;
-
-    // Scene, Camera, Renderer
+    // 1. Scene, Camera & Renderer
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = isMobile ? 6.5 : 5.2;
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      100
+    );
+    camera.position.z = 6;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mount.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      antialias: window.innerWidth > 768, // Antialias only on desktop for maximum mobile fps
+      powerPreference: 'high-performance',
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    // Strict pixel ratio cap: max 1.5 prevents mobile retina fill-rate strain
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    container.appendChild(renderer.domElement);
 
-    // Group to hold orbital elements
-    const orbitalGroup = new THREE.Group();
-    scene.add(orbitalGroup);
+    // 2. Procedural Spacecraft Mesh Core (Lightweight Wireframe)
+    const spacecraftGroup = new THREE.Group();
+    scene.add(spacecraftGroup);
 
-    // 1. Central Core: Icosahedron Wireframe
-    const coreGeometry = new THREE.IcosahedronGeometry(1.4, isMobile ? 1 : 2);
+    // Core Icosahedron Wireframe
+    const coreGeometry = new THREE.IcosahedronGeometry(1.6, 1);
     const coreMaterial = new THREE.MeshBasicMaterial({
       color: 0x66e6ff,
       wireframe: true,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.75,
     });
     const coreMesh = new THREE.Mesh(coreGeometry, coreMaterial);
-    orbitalGroup.add(coreMesh);
+    spacecraftGroup.add(coreMesh);
 
-    // 2. Outer Orbital Gyro Rings
-    const ringMaterial1 = new THREE.LineBasicMaterial({ color: 0x8b7cff, transparent: true, opacity: 0.6 });
-    const ringGeometry1 = new THREE.BufferGeometry();
-    const points1 = [];
-    const radius1 = 2.0;
-    for (let i = 0; i <= 64; i++) {
-      const theta = (i / 64) * Math.PI * 2;
-      points1.push(new THREE.Vector3(Math.cos(theta) * radius1, Math.sin(theta) * radius1, 0));
-    }
-    ringGeometry1.setFromPoints(points1);
-    const ring1 = new THREE.Line(ringGeometry1, ringMaterial1);
-    ring1.rotation.x = Math.PI / 3;
-    orbitalGroup.add(ring1);
-
-    const ringMaterial2 = new THREE.LineBasicMaterial({ color: 0x66e6ff, transparent: true, opacity: 0.5 });
-    const ringGeometry2 = new THREE.BufferGeometry();
-    const points2 = [];
-    const radius2 = 2.3;
-    for (let i = 0; i <= 64; i++) {
-      const theta = (i / 64) * Math.PI * 2;
-      points2.push(new THREE.Vector3(0, Math.cos(theta) * radius2, Math.sin(theta) * radius2));
-    }
-    ringGeometry2.setFromPoints(points2);
-    const ring2 = new THREE.Line(ringGeometry2, ringMaterial2);
-    ring2.rotation.z = Math.PI / 4;
-    orbitalGroup.add(ring2);
-
-    // 3. Satellite Node Points
-    const satelliteCount = 12;
-    const satGeometry = new THREE.BufferGeometry();
-    const satPositions = new Float32Array(satelliteCount * 3);
-    for (let i = 0; i < satelliteCount; i++) {
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-      const r = 1.9 + Math.random() * 0.8;
-      satPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      satPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      satPositions[i * 3 + 2] = r * Math.cos(phi);
-    }
-    satGeometry.setAttribute('position', new THREE.BufferAttribute(satPositions, 3));
-    const satMaterial = new THREE.PointsMaterial({
-      color: 0x66e6ff,
-      size: isMobile ? 0.06 : 0.08,
+    // Outer Primary Gyroscope Ring
+    const ringGeometry = new THREE.TorusGeometry(2.3, 0.02, 12, 48);
+    const ringMaterial = new THREE.MeshBasicMaterial({
+      color: 0x8b7cff,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.5,
     });
-    const satellites = new THREE.Points(satGeometry, satMaterial);
-    orbitalGroup.add(satellites);
+    const gyroRing = new THREE.Mesh(ringGeometry, ringMaterial);
+    spacecraftGroup.add(gyroRing);
 
-    // Mouse Tracking Parallax
+    // Secondary Inclined Ring
+    const innerRingGeometry = new THREE.TorusGeometry(2.0, 0.015, 12, 40);
+    const innerRingMaterial = new THREE.MeshBasicMaterial({
+      color: 0x66e6ff,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const innerGyroRing = new THREE.Mesh(innerRingGeometry, innerRingMaterial);
+    innerGyroRing.rotation.x = Math.PI / 3;
+    spacecraftGroup.add(innerGyroRing);
+
+    // Orbital Satellite Nodes (Small spheres)
+    const satelliteGroup = new THREE.Group();
+    const satGeo = new THREE.SphereGeometry(0.06, 8, 8);
+    const satMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+    for (let i = 0; i < 3; i++) {
+      const sat = new THREE.Mesh(satGeo, satMat);
+      const angle = (i * Math.PI * 2) / 3;
+      sat.position.set(Math.cos(angle) * 2.3, Math.sin(angle) * 2.3, 0);
+      satelliteGroup.add(sat);
+    }
+    spacecraftGroup.add(satelliteGroup);
+
+    // 3. Mouse / Touch Parallax Interpolation
     let targetRotationX = 0;
     let targetRotationY = 0;
 
-    const handleMouseMove = (e) => {
-      if (prefersReducedMotion) return;
-      const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-      const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-      targetRotationY = mouseX * 0.45;
-      targetRotationX = -mouseY * 0.35;
+    const handlePointerMove = (e) => {
+      const { clientX, clientY } = e;
+      const x = (clientX / window.innerWidth) * 2 - 1;
+      const y = -(clientY / window.innerHeight) * 2 + 1;
+      targetRotationY = x * 0.45;
+      targetRotationX = y * 0.35;
     };
 
-    if (!isMobile) {
-      window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    }
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
 
-    // Resize Handler
-    const handleResize = () => {
-      if (!mount) return;
-      const newWidth = mount.clientWidth;
-      const newHeight = mount.clientHeight;
-      camera.aspect = newWidth / newHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(newWidth, newHeight);
-    };
+    // 4. Mobile GPU Saver: Pause rendering when scrolled off-screen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !animationFrameId) {
+          renderLoop();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
 
-    window.addEventListener('resize', handleResize);
+    // 5. Optimized Animation Render Loop
+    let clock = new THREE.Clock();
 
-    // Render Loop
-    let animationFrameId;
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      if (!prefersReducedMotion) {
-        // Continuous gentle rotation
-        coreMesh.rotation.y += 0.003;
-        coreMesh.rotation.x += 0.002;
-        ring1.rotation.z += 0.005;
-        ring2.rotation.x += 0.004;
-        satellites.rotation.y -= 0.002;
-
-        // Smooth mouse lag
-        orbitalGroup.rotation.y += (targetRotationY - orbitalGroup.rotation.y) * 0.05;
-        orbitalGroup.rotation.x += (targetRotationX - orbitalGroup.rotation.x) * 0.05;
+    const renderLoop = () => {
+      if (!isVisible) {
+        animationFrameId = null;
+        return;
       }
+
+      animationFrameId = requestAnimationFrame(renderLoop);
+      const delta = clock.getDelta();
+
+      // Smooth continuous orbital rotation
+      coreMesh.rotation.y += delta * 0.3;
+      coreMesh.rotation.x += delta * 0.15;
+      gyroRing.rotation.z += delta * 0.2;
+      innerGyroRing.rotation.y += delta * 0.25;
+      satelliteGroup.rotation.z -= delta * 0.4;
+
+      // Parallax damping
+      spacecraftGroup.rotation.y += (targetRotationY - spacecraftGroup.rotation.y) * 0.05;
+      spacecraftGroup.rotation.x += (targetRotationX - spacecraftGroup.rotation.x) * 0.05;
 
       renderer.render(scene, camera);
     };
 
-    animate();
+    renderLoop();
+
+    // 6. Resize Handler
+    const handleResize = () => {
+      if (!container) return;
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
+      window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
-      if (mount && renderer.domElement) {
-        mount.removeChild(renderer.domElement);
+
+      if (container && renderer.domElement) {
+        container.removeChild(renderer.domElement);
       }
-      renderer.dispose();
+
+      // Memory cleanup
       coreGeometry.dispose();
       coreMaterial.dispose();
-      ringGeometry1.dispose();
-      ringMaterial1.dispose();
-      ringGeometry2.dispose();
-      ringMaterial2.dispose();
-      satGeometry.dispose();
-      satMaterial.dispose();
+      ringGeometry.dispose();
+      ringMaterial.dispose();
+      innerRingGeometry.dispose();
+      innerRingMaterial.dispose();
+      satGeo.dispose();
+      satMat.dispose();
+      renderer.dispose();
     };
   }, []);
 
   return (
     <div
-      ref={mountRef}
+      ref={containerRef}
       style={{
         width: '100%',
         height: '100%',
         position: 'relative',
         cursor: 'grab',
+        touchAction: 'pan-y', // Lets user scroll page seamlessly over the 3D canvas
       }}
-      aria-label="Interactive 3D Orbital Model of Unity Space Engineering Systems"
-      role="img"
+      aria-label="3D Spacecraft Orbital Simulation"
     />
   );
 }

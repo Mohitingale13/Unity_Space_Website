@@ -13,34 +13,34 @@ export default function NebulaGlow() {
       }}
       aria-hidden="true"
     >
-      {/* Primary Cyan Ambient Glow */}
+      {/* Upper Deep Space Radial Glow */}
       <div
         style={{
           position: 'absolute',
-          top: '-15%',
+          top: '-10%',
+          left: '15%',
+          width: '70vw',
+          height: '70vw',
+          maxWidth: '900px',
+          maxHeight: '900px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(20, 45, 110, 0.22) 0%, rgba(10, 25, 70, 0.08) 50%, transparent 75%)',
+          filter: 'blur(80px)',
+        }}
+      />
+      {/* Lower Subtle Cosmic Violet Ambient Glow */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '-5%',
           right: '5%',
           width: '60vw',
           height: '60vw',
-          maxWidth: '850px',
-          maxHeight: '850px',
+          maxWidth: '800px',
+          maxHeight: '800px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(102, 230, 255, 0.045) 0%, rgba(102, 230, 255, 0) 70%)',
-          filter: 'blur(60px)',
-        }}
-      />
-      {/* Secondary Violet Deep Space Nebula */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '10%',
-          left: '-10%',
-          width: '55vw',
-          height: '55vw',
-          maxWidth: '750px',
-          maxHeight: '750px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139, 124, 255, 0.04) 0%, rgba(139, 124, 255, 0) 70%)',
-          filter: 'blur(70px)',
+          background: 'radial-gradient(circle, rgba(30, 25, 80, 0.16) 0%, rgba(15, 20, 60, 0.05) 50%, transparent 75%)',
+          filter: 'blur(90px)',
         }}
       />
     </div>
