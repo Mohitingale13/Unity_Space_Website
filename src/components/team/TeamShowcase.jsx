@@ -48,18 +48,18 @@ export default function TeamShowcase() {
     if (activeFolder) {
       document.body.style.overflow = 'hidden';
       if (typeof window !== 'undefined' && window.lenis) {
-        window.lenis.stop();
+        window.lenis?.stop?.();
       }
     } else {
       document.body.style.overflow = '';
       if (typeof window !== 'undefined' && window.lenis) {
-        window.lenis.start();
+        window.lenis?.start?.();
       }
     }
     return () => {
       document.body.style.overflow = '';
       if (typeof window !== 'undefined' && window.lenis) {
-        window.lenis.start();
+        window.lenis?.start?.();
       }
     };
   }, [activeFolder]);
