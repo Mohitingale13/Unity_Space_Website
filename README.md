@@ -1,43 +1,51 @@
-﻿# Unity Space — Aerospace Engineering & Student Rocketry Platform
+﻿# Unity Space - Aerospace Engineering & Student Rocketry Platform
 
 > **"Turning Curiosity Into Aerospace."**  
-> An interactive web platform for **Unity Space**, a student-led aerospace engineering and rocketry team at **SVPM College of Engineering Malegaon(bk), Baramati**.
+> An interactive aerospace web platform for **Unity Space**, a student-led rocketry, flight systems, and space research team at **SVPM College of Engineering Malegaon(bk), Baramati**.
 
 ---
 
-## 🚀 Overview
+## 🚀 Live Deployment
 
-The Unity Space web platform is an interactive digital experience built with modern web technologies, combining aerospace storytelling, real-time 3D visuals, and smooth interactive physics.
+🌐 **Live Website**: [https://unity-space-website.vercel.app/](https://unity-space-website.vercel.app/)
+
+---
+
+## 🛰️ Architecture & Section Overview
+
+The platform combines real-time 3D WebGL graphics, spatial physics animations, and aerospace telemetry:
 
 ```
-01 / IDENTITY      → Turning Curiosity into Aerospace
-02 / MISSION       → We Don't Just Look Up. We Build Toward It.
-03 / PROJECTS      → Flight & Engineering Archive
-04 / TEAM          → The People Behind the Mission
-05 / INSIGHTS      → Why We Look Up (Technical Publications)
-06 / SPONSORSHIP   → Help Us Reach Space (Transmission Protocol)
+01 / HERO            Turning Curiosity into Aerospace (OSS Hero Stagger + 3D Spacecraft)
+02 / MISSION         We Don't Just Look Up. We Build Toward It. (3D Surface Elevation)
+03 / PROJECTS        Flight & Engineering Archive (Scroll-Driven Stream + App Store Modal)
+04 / TEAM            The People Behind the Mission (iOS App Folder Spring Expansion)
+05 / INSIGHTS        Why We Look Up (Technical Journal Carousel + Reading Modal)
+06 / SPONSORSHIP     Help Us Reach Space (Transmission Protocol Dispatch)
 ```
 
 ---
 
-## 🌟 Key Highlights
+## ✨ Key Technical Highlights
 
-### 1. Interactive 3D Orbital Gyroscope
+### 1. 3D Interactive Spacecraft Orbital Scene
 - Real-time Three.js WebGL scene with procedural icosahedron wireframe and dual-axis gyroscopic gimbal rings responding to pointer coordinates.
-- Mobile GPU optimized with dynamic frame throttling and touch interaction.
+- Mobile GPU optimized with dynamic frame throttling, touch interaction, and `touch-action: pan-y` scroll passthrough.
 
-### 2. Frosted Glass Morphing Navigation
-- **Translucent Frosted Navbar**: Translucent white glass navbar (`backdrop-filter: blur(28px)`) with subtle refraction borders.
-- **Dynamic Floating Pill Buttons**: Morphs into floating glass pills on scroll, with smooth spring-physics active indicators.
-- **Mobile-First Drawer**: Dedicated clean hamburger menu with full glass backdrop on small screens.
+### 2. Motion.dev Animation Suite Integration
+- **OSS Hero Stagger (`vue-hero-stagger`)**: Orchestrated multiline typographic reveal and spring-physics entrance (`stiffness: 280, damping: 24`).
+- **Scroll-Driven Hardware Stream (`vue-ticker-rtl`)**: Continuous right-to-left hardware telemetry stream driven by vertical page scroll with interactive touch dragging and navigation arrows.
+- **iOS App Folder Team System (`vue-ios-app-folder`)**: Subteam divisions organized into frosted glass iOS squircle folders with spring layout modal expansion (`layoutId`).
+- **Technical Journal Carousel (`react-carousel-pagination-arrows`)**: Publication slider with pagination arrows, spring dot indicators, and a click-to-open reader modal.
+- **Projects App Store Expansion (`js-app-store`)**: Shared layout morphing (`layoutId`) expanding project thumbnail cards into full engineering telemetry modals.
 
-### 3. Alternating Scroll-Driven Hardware Gallery
-- **Bi-Directional Scroll Stream**: Viewport-linked scroll interpolation driving Row 1 (left-to-right) and Row 2 (right-to-left) with Framer Motion spring physics.
-- **Interactive Drag Gestures**: Full horizontal touch and pointer drag support (`drag="x"`) with momentum and spring boundaries.
+### 3. 3D Surface Elevation Scroll Engine (`SurfaceReveal`)
+- Custom spatial perspective component elevating content from a 3D horizontal horizon plane (`rotateX: 16deg -> 0deg` with `perspective: 1200px`) as the user scrolls into each section.
 
-### 4. Atmospheric Space Depth System
+### 4. Atmospheric Space Depth & Haptic Engine
 - **Micro-Dot Parallax Starfield**: Canvas-driven starfield with delicate pinprick stars and gentle parallax depth.
 - **Aerospace Telemetry Cursor**: Aerodynamic dart cursor with real-time screen coordinates and rocket thruster ignition effects on hover.
+- **Modal Scroll Isolation**: Lenis inertial scroll engine automatically pauses on modal open with `data-lenis-prevent="true"`, preventing background page bleed.
 
 ---
 
@@ -49,6 +57,7 @@ The Unity Space web platform is an interactive digital experience built with mod
 - **Motion & Physics**: Framer Motion, Lenis Smooth Scroll
 - **Styling**: Vanilla CSS Design Tokens (Glassmorphism, CSS Variables)
 - **Icons**: Lucide React
+- **Hosting & CI/CD**: Vercel
 
 ---
 
@@ -56,13 +65,13 @@ The Unity Space web platform is an interactive digital experience built with mod
 
 ### Prerequisites
 - **Node.js**: v18.0 or higher
-- **npm** or **yarn** / **pnpm**
+- **npm** or **pnpm** / **yarn**
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/SakshiRajendraShinde/Unity_Space_Website.git
+   git clone https://github.com/Mohitingale13/Unity_Space_Website.git
    cd Unity_Space_Website
    ```
 
@@ -84,29 +93,27 @@ The Unity Space web platform is an interactive digital experience built with mod
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 Unity_Space_Website/
-├── public/
-│   ├── images/                # High-res assets & hardware imagery
-│   └── favicon.svg            # Brand icon
-│
+├── public/                  # Static assets & favicon
 ├── src/
 │   ├── components/
-│   │   ├── atmosphere/        # Starfield, Nebula Glow, Custom Cursor
-│   │   ├── navigation/        # Frosted Glass Navbar & Mobile Menu
-│   │   ├── hero/              # Hero & 3D Spacecraft Orbital Scene
-│   │   ├── mission/           # Mission Statement & Subteams
-│   │   ├── projects/          # Projects Showcase & Bi-directional Gallery
-│   │   ├── team/              # Team Showcase & Member Cards
-│   │   ├── insights/          # Technical Insights & Article Modals
-│   │   └── sponsorship/       # Sponsorship Tiers & Contact Form
+│   │   ├── atmosphere/      # Starfield, Nebula Glow, Custom Cursor, SurfaceReveal
+│   │   ├── navigation/      # Frosted Glass Navbar & Mobile Drawer
+│   │   ├── hero/            # Hero & 3D Spacecraft Orbital Scene
+│   │   ├── mission/         # Mission Statement & Focus Disciplines
+│   │   ├── projects/        # Projects Showcase & Scroll-Driven Stream
+│   │   ├── team/            # Team Showcase & iOS App Folders
+│   │   ├── insights/        # Technical Insights Carousel & Reader Modal
+│   │   ├── sponsorship/     # Sponsorship Tiers & Transmission Form
+│   │   └── footer/          # Universal Footer & Credentials
 │   │
-│   ├── data/                  # Content data (projects, team, articles)
-│   ├── styles/                # CSS design system (tokens, typography, animations)
-│   ├── App.jsx                # Main application wrapper
-│   └── main.jsx               # Entry point
+│   ├── data/                # Structured data (projects, team, articles)
+│   ├── styles/              # CSS design system (tokens, typography, animations)
+│   ├── App.jsx              # Main application wrapper with Lenis
+│   └── main.jsx             # Entry point
 │
 ├── package.json
 └── vite.config.js
@@ -119,6 +126,7 @@ Unity_Space_Website/
 - **Organization**: Unity Space
 - **Host Institution**: SVPM College of Engineering Malegaon(bk), Baramati
 - **Contact**: `unityspace70@gmail.com`
+- **Live Deployment**: [https://unity-space-website.vercel.app/](https://unity-space-website.vercel.app/)
 
 ---
 
