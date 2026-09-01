@@ -1,5 +1,4 @@
-import Hero from '../components/hero/Hero';
-import SatelliteTimeline from '../components/hero/SatelliteTimeline';
+﻿import Hero from '../components/hero/Hero';
 import MissionSection from '../components/mission/MissionSection';
 import ProjectsShowcase from '../components/projects/ProjectsShowcase';
 import TeamShowcase from '../components/team/TeamShowcase';
@@ -10,7 +9,6 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <SatelliteTimeline />
       <MissionSection />
       <ProjectsShowcase />
       <TeamShowcase />

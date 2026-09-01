@@ -1,4 +1,4 @@
-# Unity Space — Aerospace Engineering & Student Rocketry Platform
+﻿# Unity Space — Aerospace Engineering & Student Rocketry Platform
 
 > **"Turning Curiosity Into Aerospace."**  
 > An interactive web platform for **Unity Space**, a student-led aerospace engineering and rocketry team at **SVPM College of Engineering Malegaon(bk), Baramati**.
@@ -11,34 +11,32 @@ The Unity Space web platform is an interactive digital experience built with mod
 
 ```
 01 / IDENTITY      → Turning Curiosity into Aerospace
-02 / TIMELINE      → In a Nutshell: Satellite Launches (1957 – 2030)
-03 / MISSION       → We Don't Just Look Up. We Build Toward It.
-04 / PROJECTS      → Flight & Engineering Archive
-05 / TEAM          → The People Behind the Mission
-06 / INSIGHTS      → Why We Look Up (Technical Publications)
-07 / SPONSORSHIP   → Help Us Reach Space (Transmission Protocol)
+02 / MISSION       → We Don't Just Look Up. We Build Toward It.
+03 / PROJECTS      → Flight & Engineering Archive
+04 / TEAM          → The People Behind the Mission
+05 / INSIGHTS      → Why We Look Up (Technical Publications)
+06 / SPONSORSHIP   → Help Us Reach Space (Transmission Protocol)
 ```
 
 ---
 
-## ✨ Key Highlights
+## 🌟 Key Highlights
 
-### 🛰️ 1. Interactive 3D Satellite Launch Timeline
-- **3D Morphing Celestial Sphere**: Real-time Three.js particle system with 9,800+ starlight particles that gradually condense from deep space into a 3D Fibonacci planet sphere as you scroll through historical launch decades (1957 to 2030).
-- **Limb Brightening & Text Clarity**: Dense glowing outer silhouette that defines the sphere, paired with subtle interior density so typography remains crystal-clear.
-- **Synchronous Progress Tracking**: Real-time scrubber notch with synchronous yellow filling and milestone telemetry cards.
+### 1. Interactive 3D Orbital Gyroscope
+- Real-time Three.js WebGL scene with procedural icosahedron wireframe and dual-axis gyroscopic gimbal rings responding to pointer coordinates.
+- Mobile GPU optimized with dynamic frame throttling and touch interaction.
 
-### 🧭 2. Frosted Glass Morphing Navigation
+### 2. Frosted Glass Morphing Navigation
 - **Translucent Frosted Navbar**: Translucent white glass navbar (`backdrop-filter: blur(28px)`) with subtle refraction borders.
 - **Dynamic Floating Pill Buttons**: Morphs into floating glass pills on scroll, with smooth spring-physics active indicators.
+- **Mobile-First Drawer**: Dedicated clean hamburger menu with full glass backdrop on small screens.
 
-### 🛸 3. Alternating Scroll-Driven Hardware Gallery
+### 3. Alternating Scroll-Driven Hardware Gallery
 - **Bi-Directional Scroll Stream**: Viewport-linked scroll interpolation driving Row 1 (left-to-right) and Row 2 (right-to-left) with Framer Motion spring physics.
 - **Interactive Drag Gestures**: Full horizontal touch and pointer drag support (`drag="x"`) with momentum and spring boundaries.
 
-### 🌌 4. Atmospheric Space Depth System
+### 4. Atmospheric Space Depth System
 - **Micro-Dot Parallax Starfield**: Canvas-driven starfield with delicate pinprick stars and gentle parallax depth.
-- **Feathered Earth Horizon**: Scroll-responsive Earth atmosphere horizon with curved radial mask feathering.
 - **Aerospace Telemetry Cursor**: Aerodynamic dart cursor with real-time screen coordinates and rocket thruster ignition effects on hover.
 
 ---
@@ -54,7 +52,7 @@ The Unity Space web platform is an interactive digital experience built with mod
 
 ---
 
-## 🏁 Getting Started
+## 📦 Getting Started
 
 ### Prerequisites
 - **Node.js**: v18.0 or higher
@@ -91,14 +89,14 @@ The Unity Space web platform is an interactive digital experience built with mod
 ```
 Unity_Space_Website/
 ├── public/
-│   ├── images/                # High-res assets & textures
+│   ├── images/                # High-res assets & hardware imagery
 │   └── favicon.svg            # Brand icon
 │
 ├── src/
 │   ├── components/
 │   │   ├── atmosphere/        # Starfield, Nebula Glow, Custom Cursor
 │   │   ├── navigation/        # Frosted Glass Navbar & Mobile Menu
-│   │   ├── hero/              # Hero, Satellite Timeline, 3D Particle Dome
+│   │   ├── hero/              # Hero & 3D Spacecraft Orbital Scene
 │   │   ├── mission/           # Mission Statement & Subteams
 │   │   ├── projects/          # Projects Showcase & Bi-directional Gallery
 │   │   ├── team/              # Team Showcase & Member Cards
@@ -116,7 +114,7 @@ Unity_Space_Website/
 
 ---
 
-## 👥 Institution & Credits
+## 🏛️ Institution & Credits
 
 - **Organization**: Unity Space
 - **Host Institution**: SVPM College of Engineering Malegaon(bk), Baramati

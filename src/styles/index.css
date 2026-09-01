@@ -1,4 +1,4 @@
-@import './tokens.css';
+﻿@import './tokens.css';
 @import './typography.css';
 @import './animations.css';
 
@@ -46,7 +46,6 @@ p, h1, h2, h3, h4, span, .text-readable {
   position: relative;
   background-color: #040714;
 }
-
 
 /* Form Input Sizing Guardrail: 16px minimum prevents iOS Safari auto-zooming */
 input, textarea, select {
@@ -206,163 +205,9 @@ button:active, .btn:active, [role="button"]:active {
   flex-shrink: 0;
 }
 
-/* Satellite Timeline Editorial Serif Styles (Pure Upright Serif) */
-.timeline-stage-grid {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  gap: clamp(3rem, 8vw, 7rem);
-  width: 100%;
-}
-
-@media (max-width: 640px) {
-  .timeline-stage-grid {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.15rem;
-  }
-  .timeline-giant-number {
-    font-size: clamp(2.6rem, 8vw, 3.5rem) !important;
-    line-height: 1.05;
-  }
-  .timeline-label {
-    font-size: 1.05rem !important;
-    margin-bottom: 0.2rem !important;
-  }
-  .timeline-sub-label {
-    font-size: 1.05rem !important;
-    margin: 0.2rem 0 !important;
-  }
-  .timeline-desc {
-    font-size: 0.92rem !important;
-    margin-top: 0.35rem !important;
-    max-width: 320px !important;
-  }
-}
-
-.timeline-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-width: 180px;
-}
-
-.timeline-label {
-  font-family: var(--font-serif);
-  font-style: normal !important;
-  font-size: clamp(1.2rem, 1.6vw, 1.45rem);
-  color: #ffffff;
-  font-weight: 400;
-  margin-bottom: 0.4rem;
-  text-align: center;
-}
-
-.timeline-giant-number {
-  font-family: var(--font-serif);
-  font-size: clamp(3.8rem, 6.5vw, 5.5rem);
-  font-weight: 400;
-  color: #ffffff;
-  line-height: 1.05;
-  font-style: normal !important;
-  letter-spacing: -0.01em;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.timeline-sub-label {
-  font-family: var(--font-serif);
-  font-size: clamp(1.15rem, 1.4vw, 1.35rem);
-  color: #ffffff;
-  font-style: normal !important;
-  font-weight: 400;
-  margin: 0.3rem 0;
-  text-align: center;
-}
-
-.timeline-desc {
-  font-family: var(--font-serif);
-  font-size: clamp(1.1rem, 1.35vw, 1.3rem);
-  color: #ffffff;
-  line-height: 1.45;
-  text-align: center;
-  max-width: 440px;
-  margin-top: 0.6rem;
-  font-weight: 400;
-  font-style: normal !important;
-}
-
-.timeline-long-text {
-  font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 2vw, 1.65rem);
-  color: #ffffff;
-  line-height: 1.65;
-  text-align: center;
-  font-weight: 400;
-  font-style: normal !important;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.timeline-fact-text {
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
-  color: #ffffff;
-  line-height: 1.45;
-  text-align: center;
-  font-weight: 400;
-  font-style: normal !important;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.timeline-badge-blue {
-  background: #1d4ed8;
-  color: #ffffff;
-  padding: 0.1em 0.35em;
-  border-radius: 4px;
-  font-family: var(--font-serif);
-  font-weight: 500;
-  font-style: normal !important;
-  display: inline-block;
-  vertical-align: baseline;
-  box-shadow: 0 2px 10px rgba(29, 78, 216, 0.5);
-}
-
-.timeline-pill-tag {
-  background: #1d4ed8;
-  color: #ffffff;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.45rem 1.25rem;
-  border-radius: 4px;
-  display: inline-flex;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
-  margin-bottom: 2rem;
-}
-
 /* ==========================================================================
    RESPONSIVE UTILITIES & MOBILE-FIRST NAVBAR FIXES
    ========================================================================== */
-
-/* Responsive Earth Background */
-.hero-earth-container {
-  bottom: clamp(-10%, -6vw, -2%);
-  width: clamp(900px, 115vw, 1850px);
-  max-width: 1900px;
-}
-
-@media (max-width: 768px) {
-  .hero-earth-container {
-    bottom: 0% !important;
-    width: clamp(480px, 140vw, 750px) !important;
-  }
-}
 
 /* Mobile Breakpoint (< 900px) */
 @media (max-width: 900px) {
@@ -408,4 +253,3 @@ button:active, .btn:active, [role="button"]:active {
     display: flex !important;
   }
 }
-
