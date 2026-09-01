@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -114,7 +114,7 @@ export default function CustomCursor() {
           top: position.y,
           left: position.x,
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: 2147483647,
           transform: 'translate(-2px, -2px)',
         }}
         aria-hidden="true"
@@ -282,7 +282,7 @@ export default function CustomCursor() {
                   letterSpacing: '0.08em',
                 }}
               >
-                🔥 {hoverLabel}
+                ðŸ”¥ {hoverLabel}
               </span>
             )}
           </div>

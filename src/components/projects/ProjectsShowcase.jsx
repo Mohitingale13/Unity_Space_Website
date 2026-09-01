@@ -1,22 +1,45 @@
-﻿import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { projectsData, tickerHardwareCards } from '../../data/projectsData';
-import { Terminal, ArrowUpRight, X, Radio, Sparkles } from 'lucide-react';
+import SurfaceReveal from '../atmosphere/SurfaceReveal';
+import { Terminal, ArrowUpRight, X, Radio, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function ProjectsShowcase() {
   const [selectedItem, setSelectedItem] = useState(null);
-  const streamSectionRef = useRef(null);
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
 
-  // Scroll-driven interpolation: tracks vertical scroll progress across the hardware stream section
+  // Manual drag / arrow offset motion value
+  const dragX = useMotionValue(0);
+
+  // Scroll-driven interpolation: tracks vertical scroll progress across the whole Projects section
   const { scrollYProgress } = useScroll({
-    target: streamSectionRef,
+    target: sectionRef,
     offset: ['start end', 'end start'],
   });
 
-  // Smooth spring physics driving right-to-left translation on scroll
-  const rawX = useTransform(scrollYProgress, [0, 1], ['4%', '-38%']);
-  const scrollDrivenX = useSpring(rawX, { stiffness: 95, damping: 24, mass: 0.6 });
+  // Smooth scroll-driven parallax translation
+  const rawScrollX = useTransform(scrollYProgress, [0.15, 0.95], [60, -950]);
+  const scrollDrivenX = useSpring(rawScrollX, { stiffness: 90, damping: 22, mass: 0.6 });
+
+  // Arrow navigation handler to scroll cards left/right
+  const scrollCards = useCallback((direction) => {
+    const current = dragX.get();
+    const step = 380; // Approximate card width + gap
+    const newX = Math.max(-1800, Math.min(100, current + direction * step));
+    dragX.set(newX);
+  }, [dragX]);
+
+  // Wheel listener: when hovering over track, mouse wheel scrolls the cards horizontally
+  const handleTrackWheel = (e) => {
+    // If user wheels horizontally or vertically over the stream, scrub the cards
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 8) {
+      const current = dragX.get();
+      const newX = Math.max(-1800, Math.min(100, current - e.deltaY * 0.8));
+      dragX.set(newX);
+    }
+  };
 
   // Close modal on Escape key
   useEffect(() => {
@@ -27,20 +50,30 @@ export default function ProjectsShowcase() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Lock body scroll when modal is open
+  // Isolate modal scroll: freeze background page and pause Lenis while modal is open
   useEffect(() => {
     if (selectedItem) {
       document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.stop();
+      }
     } else {
       document.body.style.overflow = '';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.start();
+      }
     }
     return () => {
       document.body.style.overflow = '';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.start();
+      }
     };
   }, [selectedItem]);
 
   return (
     <section
+      ref={sectionRef}
       id="projects"
       className="section-padding"
       style={{
@@ -52,21 +85,23 @@ export default function ProjectsShowcase() {
       aria-label="Unity Space Projects Archive and Flight Hardware"
     >
       <div className="container">
-        {/* Section Header */}
-        <div style={{ maxWidth: '780px', marginBottom: '3.5rem' }}>
-          <div className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
-            03 / FLIGHT & ENGINEERING ARCHIVE
+        {/* Section Header with 3D Surface Reveal */}
+        <SurfaceReveal yOffset={60} rotateAngle={16}>
+          <div style={{ maxWidth: '780px', marginBottom: '3.5rem' }}>
+            <div className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
+              03 / FLIGHT & ENGINEERING ARCHIVE
+            </div>
+            <h2 style={{ marginBottom: '1.25rem', textTransform: 'uppercase' }}>
+              TESTED IN BARAMATI.<br />
+              <span className="text-gradient">BUILT FOR ALTITUDE.</span>
+            </h2>
+            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+              Every motor test stand, avionics board, and composite airframe represents rigorous student engineering, iterative manufacturing, and static fire validation.
+            </p>
           </div>
-          <h2 style={{ marginBottom: '1.25rem', textTransform: 'uppercase' }}>
-            TESTED IN BARAMATI.<br />
-            <span className="text-gradient">BUILT FOR ALTITUDE.</span>
-          </h2>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            Every motor test stand, avionics board, and composite airframe represents rigorous student engineering, iterative manufacturing, and static fire validation.
-          </p>
-        </div>
+        </SurfaceReveal>
 
-        {/* Featured Flagship Missions Grid */}
+        {/* Featured Flagship Missions Grid: 3D Surface Rise */}
         <div
           style={{
             display: 'grid',
@@ -75,262 +110,310 @@ export default function ProjectsShowcase() {
             marginBottom: '4.5rem',
           }}
         >
-          {projectsData.map((project) => (
-            <motion.div
-              key={project.id}
-              layoutId={`app-store-card-${project.id}`}
-              whileHover={{ y: -6, transition: { duration: 0.25 } }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedItem(project)}
-              className="glass-card"
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                padding: '0',
-                borderRadius: '24px',
-                position: 'relative',
-              }}
-            >
-              {/* Card Image Container */}
+          {projectsData.map((project, idx) => (
+            <SurfaceReveal key={project.id} delay={idx * 0.15} yOffset={65} rotateAngle={16}>
               <motion.div
-                layoutId={`app-store-image-${project.id}`}
+                layoutId={`app-store-card-${project.id}`}
+                whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setSelectedItem(project)}
+                className="glass-card"
                 style={{
-                  height: '240px',
-                  position: 'relative',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
                   overflow: 'hidden',
+                  padding: '0',
+                  borderRadius: '24px',
+                  position: 'relative',
+                  height: '100%',
                 }}
               >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                <div
+                {/* Card Image Container */}
+                <motion.div
+                  layoutId={`app-store-image-${project.id}`}
                   style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    left: '1rem',
-                    display: 'flex',
-                    gap: '0.5rem',
+                    height: '240px',
+                    position: 'relative',
+                    overflow: 'hidden',
                   }}
                 >
-                  <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
-                    {project.code}
-                  </span>
-                  <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
-                    {project.tag}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '1rem',
-                    right: '1rem',
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    backdropFilter: 'blur(12px)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                  }}
-                >
-                  <ArrowUpRight size={18} />
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      left: '1rem',
+                      display: 'flex',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
+                      {project.code}
+                    </span>
+                    <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
+                      {project.tag}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      right: '1rem',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.15)',
+                      backdropFilter: 'blur(12px)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#ffffff',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                    }}
+                  >
+                    <ArrowUpRight size={18} />
+                  </div>
+                </motion.div>
+
+                {/* Card Body */}
+                <div style={{ padding: 'clamp(1.25rem, 3vw, 1.75rem)', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div className="mono-label" style={{ color: 'var(--accent)', fontSize: '0.72rem', marginBottom: '0.5rem' }}>
+                    {project.timeline}
+                  </div>
+                  <h3 style={{ fontSize: '1.35rem', marginBottom: '0.75rem', textTransform: 'uppercase' }}>
+                    {project.title}
+                  </h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1.25rem', flex: 1 }}>
+                    {project.summary}
+                  </p>
+
+                  {/* Quick Telemetry Specs Pill */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid var(--glass-border)',
+                    }}
+                  >
+                    {project.disciplines.map((d, i) => (
+                      <span
+                        key={i}
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.68rem',
+                          color: 'var(--text-muted)',
+                          background: 'rgba(255, 255, 255, 0.03)',
+                          padding: '0.2rem 0.6rem',
+                          borderRadius: '4px',
+                          border: '1px solid var(--glass-border)',
+                        }}
+                      >
+                        {d}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
-
-              {/* Card Body */}
-              <div style={{ padding: 'clamp(1.25rem, 3vw, 1.75rem)', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <div className="mono-label" style={{ color: 'var(--accent)', fontSize: '0.72rem', marginBottom: '0.5rem' }}>
-                  {project.timeline}
-                </div>
-                <h3 style={{ fontSize: '1.35rem', marginBottom: '0.75rem', textTransform: 'uppercase' }}>
-                  {project.title}
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1.25rem', flex: 1 }}>
-                  {project.summary}
-                </p>
-
-                {/* Quick Telemetry Specs Pill */}
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '0.5rem',
-                    paddingTop: '1rem',
-                    borderTop: '1px solid var(--glass-border)',
-                  }}
-                >
-                  {project.disciplines.map((d, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.68rem',
-                        color: 'var(--text-muted)',
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        padding: '0.2rem 0.6rem',
-                        borderRadius: '4px',
-                        border: '1px solid var(--glass-border)',
-                      }}
-                    >
-                      {d}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+            </SurfaceReveal>
           ))}
         </div>
       </div>
 
       {/* =========================================================================
-          SCROLL-DRIVEN & INTERACTIVE DRAGGABLE HARDWARE STREAM
-          - Moves Right-to-Left proportionally as the user scrolls through the page
-          - User can also grab, drag, and scrub horizontally at will
-          - Clicking any card opens the fully clickable App Store telemetry modal
+          SCROLL-DRIVEN & INTERACTIVELY DRAGGABLE HARDWARE STREAM
           ========================================================================= */}
-      <div
-        ref={streamSectionRef}
-        style={{ width: '100%', overflow: 'hidden', padding: '1.5rem 0' }}
-      >
-        <div className="container" style={{ marginBottom: '1.25rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <span className="live-indicator" />
-            <span className="mono-label" style={{ letterSpacing: '0.12em', color: 'var(--text-primary)' }}>
-              LIVE HARDWARE STREAM (SCROLL-DRIVEN)
-            </span>
-          </div>
-          <span className="mono-label" style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-            SCROLL PAGE OR DRAG HORIZONTALLY // CLICK TO VIEW TELEMETRY
-          </span>
-        </div>
-
-        {/* Scroll-Driven Outer Wrapper */}
-        <motion.div
-          style={{
-            x: scrollDrivenX,
-            width: 'max-content',
-            paddingLeft: 'max(1.5rem, calc((100vw - 1280px) / 2))',
-          }}
+      <SurfaceReveal yOffset={50} rotateAngle={12}>
+        <div
+          style={{ width: '100%', overflow: 'hidden', padding: '1rem 0 2rem' }}
+          onWheel={handleTrackWheel}
         >
-          {/* Inner Interactive Draggable Track */}
+          <div className="container" style={{ marginBottom: '1.25rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <span className="live-indicator" />
+              <span className="mono-label" style={{ letterSpacing: '0.12em', color: 'var(--text-primary)' }}>
+                LIVE HARDWARE STREAM (SCROLL-DRIVEN)
+              </span>
+            </div>
+
+            {/* Navigation Controls: Arrows to scroll cards */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <motion.button
+                whileHover={{ scale: 1.1, background: 'rgba(255, 255, 255, 0.18)' }}
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => scrollCards(1)}
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+                aria-label="Scroll stream left"
+              >
+                <ChevronLeft size={18} />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1, background: 'rgba(255, 255, 255, 0.18)' }}
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => scrollCards(-1)}
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+                aria-label="Scroll stream right"
+              >
+                <ChevronRight size={18} />
+              </motion.button>
+            </div>
+          </div>
+
+          {/* Scroll-Driven Outer Container */}
           <motion.div
-            drag="x"
-            dragConstraints={{ left: -900, right: 250 }}
-            dragElastic={0.12}
-            dragThreshold={6}
-            whileDrag={{ cursor: 'grabbing' }}
             style={{
-              display: 'flex',
-              gap: '1.25rem',
-              cursor: 'grab',
-              userSelect: 'none',
-              touchAction: 'pan-y',
+              x: scrollDrivenX,
+              width: 'max-content',
+              paddingLeft: 'max(1.5rem, calc((100vw - 1280px) / 2))',
             }}
           >
-            {tickerHardwareCards.map((item) => (
-              <motion.div
-                key={item.id}
-                layoutId={`app-store-card-${item.id}`}
-                whileHover={{ scale: 1.04, y: -5 }}
-                whileTap={{ scale: 0.96 }}
-                onClick={() => setSelectedItem(item)}
-                transition={{ type: 'spring', stiffness: 350, damping: 26 }}
-                style={{
-                  width: 'clamp(270px, 28vw, 360px)',
-                  height: '210px',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  border: '1px solid var(--glass-border)',
-                  background: 'var(--space-surface)',
-                  boxShadow: '0 10px 32px rgba(0, 0, 0, 0.5)',
-                  flexShrink: 0,
-                  cursor: 'pointer',
-                  pointerEvents: 'auto',
-                }}
-              >
+            {/* Draggable Inner Track (with manual arrow offset) */}
+            <motion.div
+              ref={trackRef}
+              drag="x"
+              style={{
+                x: dragX,
+                display: 'flex',
+                gap: '1.25rem',
+                cursor: 'grab',
+                userSelect: 'none',
+                touchAction: 'pan-y',
+              }}
+              dragConstraints={{ left: -1900, right: 150 }}
+              dragElastic={0.12}
+              dragThreshold={6}
+              whileDrag={{ cursor: 'grabbing' }}
+            >
+              {tickerHardwareCards.map((item) => (
                 <motion.div
-                  layoutId={`app-store-image-${item.id}`}
-                  style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                  key={item.id}
+                  layoutId={`app-store-card-${item.id}`}
+                  whileHover={{ scale: 1.04, y: -5 }}
+                  whileTap={{ scale: 0.96 }}
+                  onClick={() => setSelectedItem(item)}
+                  transition={{ type: 'spring', stiffness: 350, damping: 26 }}
+                  style={{
+                    width: 'clamp(270px, 28vw, 360px)',
+                    height: '210px',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    position: 'relative',
+                    border: '1px solid var(--glass-border)',
+                    background: 'var(--space-surface)',
+                    boxShadow: '0 10px 32px rgba(0, 0, 0, 0.5)',
+                    flexShrink: 0,
+                    cursor: 'pointer',
+                    pointerEvents: 'auto',
+                  }}
                 >
-                  <img
-                    src={item.url}
-                    alt={item.title}
-                    loading="lazy"
-                    decoding="async"
+                  <motion.div
+                    layoutId={`app-store-image-${item.id}`}
+                    style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}
+                  >
+                    <img
+                      src={item.url}
+                      alt={item.title}
+                      loading="lazy"
+                      decoding="async"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        filter: 'brightness(0.85)',
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  </motion.div>
+
+                  {/* Top Badges */}
+                  <div
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      filter: 'brightness(0.85)',
-                      pointerEvents: 'none',
+                      position: 'absolute',
+                      top: '0.85rem',
+                      left: '0.85rem',
+                      display: 'flex',
+                      gap: '0.4rem',
+                      zIndex: 2,
                     }}
-                  />
+                  >
+                    <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)', fontSize: '0.65rem' }}>
+                      {item.code}
+                    </span>
+                    <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)', fontSize: '0.65rem' }}>
+                      {item.tag}
+                    </span>
+                  </div>
+
+                  {/* Bottom Label Overlay */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      width: '100%',
+                      padding: '0.85rem 1.1rem',
+                      background: 'linear-gradient(to top, rgba(4, 7, 20, 0.95) 0%, rgba(4, 7, 20, 0.6) 75%, transparent 100%)',
+                      zIndex: 2,
+                    }}
+                  >
+                    <div className="mono-label" style={{ color: 'var(--accent)', fontSize: '0.68rem', marginBottom: '0.15rem' }}>
+                      {item.label}
+                    </div>
+                    <div style={{ color: '#ffffff', fontSize: '0.95rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {item.title}
+                    </div>
+                  </div>
                 </motion.div>
-
-                {/* Top Badges */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0.85rem',
-                    left: '0.85rem',
-                    display: 'flex',
-                    gap: '0.4rem',
-                    zIndex: 2,
-                  }}
-                >
-                  <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)', fontSize: '0.65rem' }}>
-                    {item.code}
-                  </span>
-                  <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)', fontSize: '0.65rem' }}>
-                    {item.tag}
-                  </span>
-                </div>
-
-                {/* Bottom Label Overlay */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-                    padding: '0.85rem 1.1rem',
-                    background: 'linear-gradient(to top, rgba(4, 7, 20, 0.95) 0%, rgba(4, 7, 20, 0.6) 75%, transparent 100%)',
-                    zIndex: 2,
-                  }}
-                >
-                  <div className="mono-label" style={{ color: 'var(--accent)', fontSize: '0.68rem', marginBottom: '0.15rem' }}>
-                    {item.label}
-                  </div>
-                  <div style={{ color: '#ffffff', fontSize: '0.95rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {item.title}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+              ))}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
+        </div>
+      </SurfaceReveal>
 
       {/* =========================================================================
           FULL-SCREEN APP STORE MODAL VIA REACT PORTAL
-          - Rendered directly into document.body to ensure 100% reliable clickability
-          - Zero interference from parent overflow or transform properties
           ========================================================================= */}
       {typeof document !== 'undefined' &&
         createPortal(
           <AnimatePresence>
             {selectedItem && (
               <div
+                data-lenis-prevent="true"
                 style={{
                   position: 'fixed',
                   top: 0,
@@ -365,18 +448,22 @@ export default function ProjectsShowcase() {
                   onClick={() => setSelectedItem(null)}
                 />
 
-                {/* App Store Expanded Card Container */}
+                {/* App Store Expanded Card Container (Scrollable Info Card) */}
                 <motion.div
+                  data-lenis-prevent="true"
                   layoutId={`app-store-card-${selectedItem.id}`}
                   transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                  onWheel={(e) => e.stopPropagation()}
                   style={{
                     position: 'relative',
                     width: 'min(100%, 740px)',
-                    maxHeight: '90vh',
+                    maxHeight: '88vh',
                     background: '#0a1024',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     borderRadius: '26px',
                     overflowY: 'auto',
+                    overscrollBehavior: 'contain',
+                    WebkitOverflowScrolling: 'touch',
                     boxShadow: '0 30px 90px rgba(0, 0, 0, 0.9), 0 0 45px rgba(102, 230, 255, 0.18)',
                     zIndex: 2,
                     pointerEvents: 'auto',

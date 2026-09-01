@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Lenis from 'lenis';
 import StarfieldCanvas from './components/atmosphere/StarfieldCanvas';
@@ -25,6 +25,9 @@ export default function App() {
       infinite: false,
     });
 
+    // Expose lenis instance globally for modal pause/resume
+    window.lenis = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -35,6 +38,7 @@ export default function App() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       lenis.destroy();
+      delete window.lenis;
     };
   }, []);
 
@@ -63,7 +67,7 @@ export default function App() {
           </Routes>
         </main>
 
-        {/* Institutional Footer */}
+        {/* Universal Footer */}
         <Footer />
       </div>
     </Router>

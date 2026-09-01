@@ -9,8 +9,8 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.12,
-      delayChildren: 0.1,
+      staggerChildren: 0.1,
+      delayChildren: 0.08,
     },
   },
 };
@@ -18,26 +18,7 @@ const containerVariants = {
 const itemVariants = {
   hidden: {
     opacity: 0,
-    y: 28,
-    filter: 'blur(8px)',
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: {
-      type: 'spring',
-      stiffness: 260,
-      damping: 24,
-      mass: 0.75,
-    },
-  },
-};
-
-const lineVariants = {
-  hidden: {
-    opacity: 0,
-    y: 35,
+    y: 22,
     filter: 'blur(6px)',
   },
   visible: {
@@ -47,6 +28,25 @@ const lineVariants = {
     transition: {
       type: 'spring',
       stiffness: 280,
+      damping: 24,
+      mass: 0.7,
+    },
+  },
+};
+
+const lineVariants = {
+  hidden: {
+    opacity: 0,
+    y: 26,
+    filter: 'blur(5px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 300,
       damping: 22,
     },
   },
@@ -61,8 +61,8 @@ export default function Hero() {
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        paddingTop: 'calc(var(--header-height-expanded) + 1.5rem)',
-        paddingBottom: '3.5rem',
+        paddingTop: 'calc(var(--header-height-expanded, 80px) + 0.75rem)',
+        paddingBottom: '2rem',
         overflow: 'hidden',
       }}
       aria-label="Unity Space Hero Showcase"
@@ -73,12 +73,12 @@ export default function Hero() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
             alignItems: 'center',
-            gap: 'clamp(2rem, 5vw, 3.5rem)',
+            gap: 'clamp(1.5rem, 4vw, 3rem)',
           }}
         >
           {/* Staggered Typographic & Brand Showpiece */}
           <motion.div
-            style={{ maxWidth: '680px' }}
+            style={{ maxWidth: '620px' }}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -90,26 +90,27 @@ export default function Hero() {
                 display: 'flex',
                 flexWrap: 'wrap',
                 alignItems: 'center',
-                gap: '0.65rem',
-                marginBottom: '1.5rem',
+                gap: '0.6rem',
+                marginBottom: '0.85rem',
               }}
             >
-              <div className="mono-tag">
-                <Radio size={12} style={{ color: 'var(--accent-status)' }} />
+              <div className="mono-tag" style={{ padding: '0.2rem 0.6rem', fontSize: '0.72rem' }}>
+                <Radio size={11} style={{ color: 'var(--accent-status)' }} />
                 <span>MISSION TELEMETRY: ACTIVE</span>
               </div>
-              <span className="mono-label" style={{ color: 'var(--text-muted)' }}>
+              <span className="mono-label" style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
                 BARAMATI RANGE 01
               </span>
             </motion.div>
 
-            {/* 2. Staggered Multiline Headline */}
+            {/* 2. Staggered Multiline Headline (Mobile-First Clamping) */}
             <motion.h1
               style={{
-                fontSize: 'clamp(2.35rem, 8.5vw, 6rem)',
-                marginBottom: '1.25rem',
+                fontSize: 'clamp(1.95rem, 7.5vw, 3.85rem)',
+                marginBottom: '0.85rem',
                 textTransform: 'uppercase',
-                lineHeight: 1.05,
+                lineHeight: 1.04,
+                letterSpacing: '-0.02em',
                 overflow: 'hidden',
               }}
             >
@@ -128,34 +129,34 @@ export default function Hero() {
             <motion.p
               variants={itemVariants}
               style={{
-                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                fontSize: 'clamp(0.92rem, 1.3vw, 1.08rem)',
                 color: 'var(--text-secondary)',
-                marginBottom: '2rem',
-                lineHeight: 1.6,
-                maxWidth: '560px',
+                marginBottom: '1.4rem',
+                lineHeight: 1.55,
+                maxWidth: '520px',
               }}
             >
               Pioneering student-led rocketry, flight systems, and multidisciplinary aerospace research from SVPM College of Engineering.
             </motion.p>
 
-            {/* 4. Action Group */}
+            {/* 4. Action Group: Mobile-First Touch Target Alignment */}
             <motion.div
               variants={itemVariants}
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '0.85rem',
+                gap: '0.75rem',
                 alignItems: 'center',
               }}
               className="hero-btn-group"
             >
-              <MagneticButton href="#mission" className="btn btn-primary" style={{ flex: '1 1 auto' }}>
+              <MagneticButton href="#mission" className="btn btn-primary" style={{ padding: '0.65rem 1.4rem', minHeight: '44px' }}>
                 <span>EXPLORE THE MISSION</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={15} />
               </MagneticButton>
 
-              <MagneticButton href="#projects" className="btn btn-secondary" style={{ flex: '1 1 auto' }}>
-                <Terminal size={15} style={{ color: 'var(--accent)' }} />
+              <MagneticButton href="#projects" className="btn btn-secondary" style={{ padding: '0.65rem 1.4rem', minHeight: '44px' }}>
+                <Terminal size={14} style={{ color: 'var(--accent)' }} />
                 <span>FLIGHT ARCHIVE</span>
               </MagneticButton>
             </motion.div>
@@ -166,34 +167,34 @@ export default function Hero() {
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: 'clamp(1rem, 4vw, 2.5rem)',
-                marginTop: '2.5rem',
-                paddingTop: '1.25rem',
+                gap: 'clamp(1rem, 3vw, 2rem)',
+                marginTop: '1.5rem',
+                paddingTop: '1rem',
                 borderTop: '1px solid var(--glass-border)',
               }}
             >
               <div>
-                <div className="mono-label" style={{ color: 'var(--accent)' }}>08 MEMBERS</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Multidisciplinary</div>
+                <div className="mono-label" style={{ color: 'var(--accent)', fontSize: '0.78rem' }}>08 MEMBERS</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Multidisciplinary</div>
               </div>
               <div>
-                <div className="mono-label" style={{ color: 'var(--accent-secondary)' }}>02 SUBTEAMS</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Flight & Outreach</div>
+                <div className="mono-label" style={{ color: 'var(--accent-secondary)', fontSize: '0.78rem' }}>02 SUBTEAMS</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Flight & Outreach</div>
               </div>
               <div>
-                <div className="mono-label" style={{ color: 'var(--text-primary)' }}>SVPM COE</div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Host Institution</div>
+                <div className="mono-label" style={{ color: 'var(--text-primary)', fontSize: '0.78rem' }}>SVPM COE</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Host Institution</div>
               </div>
             </motion.div>
           </motion.div>
 
-          {/* 6. Interactive 3D Orbital Scene with Spring Entrance */}
+          {/* 6. Interactive 3D Orbital Scene with Pan-Y Touch Scroll Passthrough */}
           <motion.div
             initial={{ opacity: 0, scale: 0.88, filter: 'blur(10px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              height: 'clamp(280px, 45vw, 520px)',
+              height: 'clamp(240px, 34vw, 440px)',
               position: 'relative',
               display: 'flex',
               alignItems: 'center',

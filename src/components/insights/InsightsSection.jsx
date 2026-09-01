@@ -2,6 +2,7 @@
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { articlesData } from '../../data/articlesData';
+import SurfaceReveal from '../atmosphere/SurfaceReveal';
 import { ChevronLeft, ChevronRight, BookOpen, X, Clock, Calendar, Sparkles, ArrowRight } from 'lucide-react';
 
 // Directional slide animation variants (from motion.dev/examples/react-carousel-pagination-arrows)
@@ -71,15 +72,24 @@ export default function InsightsSection() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedArticle, currentIndex]);
 
-  // Lock body scroll when article reader is open
+  // Lock body scroll and pause Lenis when article reader is open
   useEffect(() => {
     if (selectedArticle) {
       document.body.style.overflow = 'hidden';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.stop();
+      }
     } else {
       document.body.style.overflow = '';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.start();
+      }
     }
     return () => {
       document.body.style.overflow = '';
+      if (typeof window !== 'undefined' && window.lenis) {
+        window.lenis.start();
+      }
     };
   }, [selectedArticle]);
 
@@ -98,242 +108,246 @@ export default function InsightsSection() {
       aria-label="Unity Space Aerospace Publications & Insights"
     >
       <div className="container">
-        {/* Section Header with Arrow Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            gap: '1.5rem',
-            marginBottom: '3rem',
-          }}
-        >
-          <div style={{ maxWidth: '780px' }}>
-            <div className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
-              05 / TECHNICAL INSIGHTS & STORIES
+        {/* Section Header with 3D Surface Reveal */}
+        <SurfaceReveal yOffset={60} rotateAngle={16}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: '1.5rem',
+              marginBottom: '3rem',
+            }}
+          >
+            <div style={{ maxWidth: '780px' }}>
+              <div className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
+                05 / TECHNICAL INSIGHTS & STORIES
+              </div>
+              <h2 style={{ marginBottom: '1rem', textTransform: 'uppercase' }}>
+                WHY WE<br />
+                <span className="text-gradient">LOOK UP.</span>
+              </h2>
+              <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', margin: 0 }}>
+                Perspectives on student aerospace methodology, test range operations, and the engineering culture of Unity Space.
+              </p>
             </div>
-            <h2 style={{ marginBottom: '1rem', textTransform: 'uppercase' }}>
-              WHY WE<br />
-              <span className="text-gradient">LOOK UP.</span>
-            </h2>
-            <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Perspectives on student aerospace methodology, test range operations, and the engineering culture of Unity Space.
-            </p>
-          </div>
 
-          {/* Carousel Arrows (Pagination Controls) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <motion.button
-              whileHover={{ scale: 1.08, background: 'rgba(255, 255, 255, 0.18)' }}
-              whileTap={{ scale: 0.92 }}
-              type="button"
-              onClick={() => paginate(-1)}
-              style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(16px)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
-              }}
-              aria-label="Previous Article"
-            >
-              <ChevronLeft size={22} />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.08, background: 'rgba(255, 255, 255, 0.18)' }}
-              whileTap={{ scale: 0.92 }}
-              type="button"
-              onClick={() => paginate(1)}
-              style={{
-                width: '46px',
-                height: '46px',
-                borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.08)',
-                backdropFilter: 'blur(16px)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                color: '#ffffff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
-              }}
-              aria-label="Next Article"
-            >
-              <ChevronRight size={22} />
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Carousel Active Slide Viewport */}
-        <div style={{ position: 'relative', minHeight: '440px', width: '100%', marginBottom: '2.5rem' }}>
-          <AnimatePresence initial={false} custom={direction} mode="wait">
-            <motion.div
-              key={currentIndex}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              style={{
-                width: '100%',
-              }}
-            >
-              {/* Active Carousel Card */}
-              <div
-                className="glass-card"
+            {/* Carousel Arrows (Pagination Controls) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <motion.button
+                whileHover={{ scale: 1.08, background: 'rgba(255, 255, 255, 0.18)' }}
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => paginate(-1)}
                 style={{
-                  padding: '0',
-                  borderRadius: '26px',
-                  overflow: 'hidden',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   cursor: 'pointer',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(102, 230, 255, 0.1)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
                 }}
-                onClick={() => setSelectedArticle(currentArticle)}
+                aria-label="Previous Article"
               >
-                {/* Carousel Image Container (Clickable to show Info content) */}
+                <ChevronLeft size={22} />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.08, background: 'rgba(255, 255, 255, 0.18)' }}
+                whileTap={{ scale: 0.92 }}
+                type="button"
+                onClick={() => paginate(1)}
+                style={{
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+                }}
+                aria-label="Next Article"
+              >
+                <ChevronRight size={22} />
+              </motion.button>
+            </div>
+          </div>
+        </SurfaceReveal>
+
+        {/* Carousel Active Slide with 3D Surface Reveal */}
+        <SurfaceReveal yOffset={65} rotateAngle={16}>
+          <div style={{ position: 'relative', minHeight: '440px', width: '100%', marginBottom: '2.5rem' }}>
+            <AnimatePresence initial={false} custom={direction} mode="wait">
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                style={{
+                  width: '100%',
+                }}
+              >
+                {/* Active Carousel Card */}
                 <div
+                  className="glass-card"
                   style={{
-                    height: 'clamp(280px, 42vw, 420px)',
-                    position: 'relative',
+                    padding: '0',
+                    borderRadius: '26px',
                     overflow: 'hidden',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+                    cursor: 'pointer',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(102, 230, 255, 0.1)',
                   }}
+                  onClick={() => setSelectedArticle(currentArticle)}
                 >
-                  <img
-                    src={currentArticle.image}
-                    alt={currentArticle.title}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                    }}
-                  />
+                  {/* Carousel Image Container (Clickable to show Info content) */}
                   <div
                     style={{
-                      position: 'absolute',
-                      top: '1.25rem',
-                      left: '1.25rem',
-                      display: 'flex',
-                      gap: '0.5rem',
+                      height: 'clamp(280px, 42vw, 420px)',
+                      position: 'relative',
+                      overflow: 'hidden',
                     }}
                   >
-                    <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
-                      {currentArticle.code}
-                    </span>
-                    <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
-                      {currentArticle.category}
-                    </span>
-                  </div>
-
-                  {/* Tap to View Overlay Pill */}
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '1.25rem',
-                      right: '1.25rem',
-                      background: 'rgba(4, 7, 20, 0.8)',
-                      backdropFilter: 'blur(12px)',
-                      padding: '0.4rem 0.85rem',
-                      borderRadius: 'var(--radius-pill)',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      color: '#ffffff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      fontSize: '0.75rem',
-                      fontFamily: 'var(--font-mono)',
-                    }}
-                  >
-                    <span>CLICK IMAGE FOR INFO</span>
-                    <ArrowRight size={13} style={{ color: 'var(--accent)' }} />
-                  </div>
-                </div>
-
-                {/* Carousel Content Teaser */}
-                <div
-                  style={{
-                    padding: 'clamp(1.5rem, 4vw, 3rem)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
+                    <img
+                      src={currentArticle.image}
+                      alt={currentArticle.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                    />
                     <div
                       style={{
+                        position: 'absolute',
+                        top: '1.25rem',
+                        left: '1.25rem',
                         display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem',
-                        marginBottom: '1rem',
+                        gap: '0.5rem',
                       }}
                     >
-                      <span className="mono-label" style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Clock size={13} />
-                        {currentArticle.readTime}
+                      <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
+                        {currentArticle.code}
                       </span>
-                      <span className="mono-label" style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Calendar size={13} />
-                        {currentArticle.date}
+                      <span className="mono-tag secondary" style={{ background: 'rgba(4, 7, 20, 0.85)', backdropFilter: 'blur(8px)' }}>
+                        {currentArticle.category}
                       </span>
                     </div>
 
-                    <h3
+                    {/* Tap to View Overlay Pill */}
+                    <div
                       style={{
-                        fontSize: 'clamp(1.6rem, 3.2vw, 2.3rem)',
-                        lineHeight: 1.15,
-                        marginBottom: '1.25rem',
+                        position: 'absolute',
+                        bottom: '1.25rem',
+                        right: '1.25rem',
+                        background: 'rgba(4, 7, 20, 0.8)',
+                        backdropFilter: 'blur(12px)',
+                        padding: '0.4rem 0.85rem',
+                        borderRadius: 'var(--radius-pill)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
                         color: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        fontSize: '0.75rem',
+                        fontFamily: 'var(--font-mono)',
                       }}
                     >
-                      {currentArticle.title}
-                    </h3>
-
-                    <p
-                      style={{
-                        color: 'var(--text-secondary)',
-                        fontSize: '1.05rem',
-                        lineHeight: 1.7,
-                        marginBottom: '2rem',
-                      }}
-                    >
-                      {currentArticle.excerpt}
-                    </p>
+                      <span>CLICK IMAGE FOR INFO</span>
+                      <ArrowRight size={13} style={{ color: 'var(--accent)' }} />
+                    </div>
                   </div>
 
-                  {/* Read Article Trigger */}
+                  {/* Carousel Content Teaser */}
                   <div
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.65rem',
-                      color: 'var(--accent)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.06em',
+                      padding: 'clamp(1.5rem, 4vw, 3rem)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
                     }}
                   >
-                    <BookOpen size={16} />
-                    <span>SHOW FULL PUBLICATION INFO</span>
+                    <div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem',
+                          marginBottom: '1rem',
+                        }}
+                      >
+                        <span className="mono-label" style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <Clock size={13} />
+                          {currentArticle.readTime}
+                        </span>
+                        <span className="mono-label" style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <Calendar size={13} />
+                          {currentArticle.date}
+                        </span>
+                      </div>
+
+                      <h3
+                        style={{
+                          fontSize: 'clamp(1.6rem, 3.2vw, 2.3rem)',
+                          lineHeight: 1.15,
+                          marginBottom: '1.25rem',
+                          color: '#ffffff',
+                        }}
+                      >
+                        {currentArticle.title}
+                      </h3>
+
+                      <p
+                        style={{
+                          color: 'var(--text-secondary)',
+                          fontSize: '1.05rem',
+                          lineHeight: 1.7,
+                          marginBottom: '2rem',
+                        }}
+                      >
+                        {currentArticle.excerpt}
+                      </p>
+                    </div>
+
+                    {/* Read Article Trigger */}
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.65rem',
+                        color: 'var(--accent)',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        letterSpacing: '0.06em',
+                      }}
+                    >
+                      <BookOpen size={16} />
+                      <span>SHOW FULL PUBLICATION INFO</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </SurfaceReveal>
 
         {/* Pagination Dots Indicator with Animated Spring Pill */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.65rem' }}>
@@ -376,12 +390,13 @@ export default function InsightsSection() {
         </div>
       </div>
 
-      {/* Expanded Publication Modal via React Portal directly into body */}
+      {/* Expanded Publication Modal via React Portal directly into body with data-lenis-prevent */}
       {typeof document !== 'undefined' &&
         createPortal(
           <AnimatePresence>
             {selectedArticle && (
               <div
+                data-lenis-prevent="true"
                 style={{
                   position: 'fixed',
                   top: 0,
@@ -418,10 +433,12 @@ export default function InsightsSection() {
 
                 {/* Expanded Info Content Card */}
                 <motion.div
+                  data-lenis-prevent="true"
                   initial={{ opacity: 0, scale: 0.94, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.94, y: 20 }}
                   transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                  onWheel={(e) => e.stopPropagation()}
                   style={{
                     position: 'relative',
                     width: 'min(100%, 760px)',
@@ -430,6 +447,8 @@ export default function InsightsSection() {
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     borderRadius: '26px',
                     overflowY: 'auto',
+                    overscrollBehavior: 'contain',
+                    WebkitOverflowScrolling: 'touch',
                     boxShadow: '0 30px 80px rgba(0, 0, 0, 0.85), 0 0 35px rgba(102, 230, 255, 0.15)',
                     zIndex: 2,
                     pointerEvents: 'auto',
