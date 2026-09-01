@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { articlesData } from '../../data/articlesData';
 import { ChevronLeft, ChevronRight, BookOpen, X, Clock, Calendar, Sparkles, ArrowRight } from 'lucide-react';
@@ -69,6 +70,18 @@ export default function InsightsSection() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedArticle, currentIndex]);
+
+  // Lock body scroll when article reader is open
+  useEffect(() => {
+    if (selectedArticle) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedArticle]);
 
   const currentArticle = articlesData[currentIndex];
 
@@ -161,10 +174,7 @@ export default function InsightsSection() {
           </div>
         </div>
 
-        {/* =========================================================================
-            FEATURE 4: REACT CAROUSEL WITH PAGINATION ARROWS & CLICK-TO-INFO
-            Reference: https://motion.dev/examples/react-carousel-pagination-arrows
-            ========================================================================= */}
+        {/* Carousel Active Slide Viewport */}
         <div style={{ position: 'relative', minHeight: '440px', width: '100%', marginBottom: '2.5rem' }}>
           <AnimatePresence initial={false} custom={direction} mode="wait">
             <motion.div
@@ -366,168 +376,172 @@ export default function InsightsSection() {
         </div>
       </div>
 
-      {/* =========================================================================
-          CLICK-TO-SHOW INFO CONTENT MODAL
-          ========================================================================= */}
-      <AnimatePresence>
-        {selectedArticle && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              zIndex: 9999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 'clamp(1rem, 3vw, 2.5rem)',
-            }}
-          >
-            {/* Backdrop Blur */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'rgba(4, 7, 20, 0.88)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
-              }}
-              onClick={() => setSelectedArticle(null)}
-            />
-
-            {/* Expanded Info Content Card */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 20 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-              style={{
-                position: 'relative',
-                width: 'min(100%, 760px)',
-                maxHeight: '88vh',
-                background: '#0a1024',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '26px',
-                overflowY: 'auto',
-                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.85), 0 0 35px rgba(102, 230, 255, 0.15)',
-                zIndex: 2,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header Image */}
-              <div style={{ height: 'clamp(200px, 30vh, 280px)', position: 'relative', overflow: 'hidden' }}>
-                <img
-                  src={selectedArticle.image}
-                  alt={selectedArticle.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                <div
+      {/* Expanded Publication Modal via React Portal directly into body */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {selectedArticle && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100vw',
+                  height: '100vh',
+                  zIndex: 100000,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 'clamp(1rem, 3vw, 2.5rem)',
+                  pointerEvents: 'auto',
+                }}
+              >
+                {/* Backdrop Blur (Click to close) */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
                   style={{
                     position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to bottom, transparent 30%, rgba(10, 16, 36, 1) 100%)',
-                  }}
-                />
-
-                {/* Close Button */}
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  type="button"
-                  onClick={() => setSelectedArticle(null)}
-                  style={{
-                    position: 'absolute',
-                    top: '1.25rem',
-                    right: '1.25rem',
-                    background: 'rgba(4, 7, 20, 0.65)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%',
-                    width: '38px',
-                    height: '38px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'rgba(4, 7, 20, 0.88)',
+                    backdropFilter: 'blur(28px)',
+                    WebkitBackdropFilter: 'blur(28px)',
                     cursor: 'pointer',
-                    zIndex: 10,
                   }}
-                  aria-label="Close Publication View"
-                >
-                  <X size={18} />
-                </motion.button>
-              </div>
+                  onClick={() => setSelectedArticle(null)}
+                />
 
-              {/* Publication Body Content */}
-              <div style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                  <span className="mono-tag">{selectedArticle.code}</span>
-                  <span className="mono-tag secondary">{selectedArticle.category}</span>
-                  <span className="mono-label" style={{ color: 'var(--text-muted)' }}>
-                    {selectedArticle.readTime}
-                  </span>
-                </div>
-
-                <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.4rem)', color: '#ffffff', marginBottom: '1.25rem', lineHeight: 1.15 }}>
-                  {selectedArticle.title}
-                </h2>
-
-                <div
+                {/* Expanded Info Content Card */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.94, y: 20 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
                   style={{
-                    padding: '1.25rem',
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--glass-border)',
-                    marginBottom: '1.75rem',
+                    position: 'relative',
+                    width: 'min(100%, 760px)',
+                    maxHeight: '88vh',
+                    background: '#0a1024',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '26px',
+                    overflowY: 'auto',
+                    boxShadow: '0 30px 80px rgba(0, 0, 0, 0.85), 0 0 35px rgba(102, 230, 255, 0.15)',
+                    zIndex: 2,
+                    pointerEvents: 'auto',
                   }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <p style={{ color: 'var(--accent)', fontSize: '1.05rem', fontStyle: 'italic', margin: 0, lineHeight: 1.6 }}>
-                    &ldquo;{selectedArticle.excerpt}&rdquo;
-                  </p>
-                </div>
+                  {/* Header Image */}
+                  <div style={{ height: 'clamp(200px, 30vh, 280px)', position: 'relative', overflow: 'hidden' }}>
+                    <img
+                      src={selectedArticle.image}
+                      alt={selectedArticle.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(to bottom, transparent 30%, rgba(10, 16, 36, 1) 100%)',
+                      }}
+                    />
 
-                <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2rem' }}>
-                  {selectedArticle.content}
-                </p>
-
-                {/* Footer Metadata */}
-                <div
-                  style={{
-                    paddingTop: '1.25rem',
-                    borderTop: '1px solid var(--glass-border)',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '1rem',
-                  }}
-                >
-                  <div className="mono-label" style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
-                    SVPM COLLEGE OF ENGINEERING // UNITY SPACE TECHNICAL JOURNAL
+                    {/* Close Button */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedArticle(null)}
+                      style={{
+                        position: 'absolute',
+                        top: '1.25rem',
+                        right: '1.25rem',
+                        background: 'rgba(4, 7, 20, 0.75)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(255, 255, 255, 0.35)',
+                        borderRadius: '50%',
+                        width: '42px',
+                        height: '42px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#ffffff',
+                        cursor: 'pointer',
+                        zIndex: 10,
+                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
+                      }}
+                      aria-label="Close Publication View"
+                    >
+                      <X size={20} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedArticle(null)}
-                    className="btn btn-secondary"
-                    style={{ padding: '0.5rem 1.25rem', minHeight: '36px' }}
-                  >
-                    CLOSE
-                  </button>
-                </div>
+
+                  {/* Publication Body Content */}
+                  <div style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                      <span className="mono-tag">{selectedArticle.code}</span>
+                      <span className="mono-tag secondary">{selectedArticle.category}</span>
+                      <span className="mono-label" style={{ color: 'var(--text-muted)' }}>
+                        {selectedArticle.readTime}
+                      </span>
+                    </div>
+
+                    <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.4rem)', color: '#ffffff', marginBottom: '1.25rem', lineHeight: 1.15 }}>
+                      {selectedArticle.title}
+                    </h2>
+
+                    <div
+                      style={{
+                        padding: '1.25rem',
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        borderRadius: 'var(--radius-md)',
+                        border: '1px solid var(--glass-border)',
+                        marginBottom: '1.75rem',
+                      }}
+                    >
+                      <p style={{ color: 'var(--accent)', fontSize: '1.05rem', fontStyle: 'italic', margin: 0, lineHeight: 1.6 }}>
+                        &ldquo;{selectedArticle.excerpt}&rdquo;
+                      </p>
+                    </div>
+
+                    <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, fontSize: '1.05rem', marginBottom: '2rem' }}>
+                      {selectedArticle.content}
+                    </p>
+
+                    {/* Footer Metadata & Close CTA */}
+                    <div
+                      style={{
+                        paddingTop: '1.25rem',
+                        borderTop: '1px solid var(--glass-border)',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '1rem',
+                      }}
+                    >
+                      <div className="mono-label" style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                        SVPM COLLEGE OF ENGINEERING // UNITY SPACE TECHNICAL JOURNAL
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedArticle(null)}
+                        className="btn btn-secondary"
+                        style={{ padding: '0.5rem 1.25rem', minHeight: '36px' }}
+                      >
+                        CLOSE
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </section>
   );
 }

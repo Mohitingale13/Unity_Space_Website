@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { teamMembers } from '../../data/teamData';
 import { Users, X, ArrowUpRight, ShieldCheck, Sparkles, Folder } from 'lucide-react';
@@ -40,6 +41,18 @@ export default function TeamShowcase() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // Lock body scroll when folder modal is open
+  useEffect(() => {
+    if (activeFolder) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeFolder]);
 
   return (
     <section
@@ -127,10 +140,7 @@ export default function TeamShowcase() {
           </div>
         </div>
 
-        {/* =========================================================================
-            FEATURE 3: iOS APP FOLDER VIEW (Folders Grid with Spring Expansion)
-            Reference: https://motion.dev/examples/vue-ios-app-folder
-            ========================================================================= */}
+        {/* iOS Folders Grid */}
         {viewMode === 'folders' && (
           <div
             style={{
@@ -309,168 +319,170 @@ export default function TeamShowcase() {
         )}
       </div>
 
-      {/* =========================================================================
-          FEATURE 3 MODAL: EXPANDED iOS APP FOLDER MODAL
-          Reference: https://motion.dev/examples/vue-ios-app-folder
-          ========================================================================= */}
-      <AnimatePresence>
-        {activeFolder && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              zIndex: 9999,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 'clamp(1rem, 3vw, 2.5rem)',
-            }}
-          >
-            {/* Backdrop Blur */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'rgba(4, 7, 20, 0.85)',
-                backdropFilter: 'blur(30px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(30px) saturate(180%)',
-              }}
-              onClick={() => setActiveFolder(null)}
-            />
-
-            {/* Expanded Folder Container (layoutId shared transition with Folder Icon) */}
-            <motion.div
-              layoutId={`ios-folder-${activeFolder.id}`}
-              transition={{ type: 'spring', stiffness: 340, damping: 28 }}
-              style={{
-                position: 'relative',
-                width: 'min(100%, 820px)',
-                maxHeight: '88vh',
-                background: 'rgba(10, 16, 36, 0.95)',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                borderRadius: '34px',
-                padding: 'clamp(1.5rem, 4vw, 2.5rem)',
-                overflowY: 'auto',
-                boxShadow: '0 30px 90px rgba(0, 0, 0, 0.85), inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 0 35px rgba(102, 230, 255, 0.15)',
-                zIndex: 2,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header inside Folder */}
+      {/* Expanded iOS Folder Modal Rendered via React Portal directly into body */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {activeFolder && (
               <div
                 style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100vw',
+                  height: '100vh',
+                  zIndex: 100000,
                   display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between',
-                  gap: '1rem',
-                  marginBottom: '2rem',
-                  paddingBottom: '1.25rem',
-                  borderBottom: '1px solid var(--glass-border)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 'clamp(1rem, 3vw, 2.5rem)',
+                  pointerEvents: 'auto',
                 }}
               >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
-                    <span className="mono-tag">{activeFolder.code}</span>
-                    <span className="mono-label" style={{ color: 'var(--accent)' }}>
-                      {activeFolder.members.length} ACTIVE MEMBERS
-                    </span>
-                  </div>
-                  <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', color: '#ffffff', textTransform: 'uppercase' }}>
-                    {activeFolder.name}
-                  </h2>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
-                    {activeFolder.tagline}
-                  </p>
-                </div>
-
-                {/* Close Button */}
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  type="button"
-                  onClick={() => setActiveFolder(null)}
+                {/* Backdrop Blur (Click to close) */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
                   style={{
-                    background: 'rgba(255, 255, 255, 0.12)',
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    borderRadius: '50%',
-                    width: '40px',
-                    height: '40px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#ffffff',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'rgba(4, 7, 20, 0.85)',
+                    backdropFilter: 'blur(30px) saturate(180%)',
+                    WebkitBackdropFilter: 'blur(30px) saturate(180%)',
                     cursor: 'pointer',
-                    flexShrink: 0,
                   }}
-                  aria-label="Close Folder"
-                >
-                  <X size={18} />
-                </motion.button>
-              </div>
+                  onClick={() => setActiveFolder(null)}
+                />
 
-              {/* Members Grid Inside Folder */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
-                  gap: '1.25rem',
-                }}
-              >
-                {activeFolder.members.map((member) => (
-                  <motion.div
-                    key={member.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                    className="glass-card"
+                {/* Expanded Folder Container */}
+                <motion.div
+                  layoutId={`ios-folder-${activeFolder.id}`}
+                  transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+                  style={{
+                    position: 'relative',
+                    width: 'min(100%, 820px)',
+                    maxHeight: '88vh',
+                    background: 'rgba(10, 16, 36, 0.96)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    borderRadius: '34px',
+                    padding: 'clamp(1.5rem, 4vw, 2.5rem)',
+                    overflowY: 'auto',
+                    boxShadow: '0 30px 90px rgba(0, 0, 0, 0.85), inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 0 35px rgba(102, 230, 255, 0.15)',
+                    zIndex: 2,
+                    pointerEvents: 'auto',
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Header inside Folder */}
+                  <div
                     style={{
-                      padding: '0',
-                      overflow: 'hidden',
-                      borderRadius: '20px',
                       display: 'flex',
-                      flexDirection: 'column',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      gap: '1rem',
+                      marginBottom: '2rem',
+                      paddingBottom: '1.25rem',
+                      borderBottom: '1px solid var(--glass-border)',
                     }}
                   >
-                    <div style={{ height: '180px', width: '100%', position: 'relative', overflow: 'hidden' }}>
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                      <div style={{ position: 'absolute', top: '0.65rem', left: '0.65rem' }}>
-                        <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', fontSize: '0.62rem' }}>
-                          {member.badge}
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                        <span className="mono-tag">{activeFolder.code}</span>
+                        <span className="mono-label" style={{ color: 'var(--accent)' }}>
+                          {activeFolder.members.length} ACTIVE MEMBERS
                         </span>
                       </div>
-                    </div>
-                    <div style={{ padding: '1rem' }}>
-                      <h4 style={{ fontSize: '1.05rem', marginBottom: '0.2rem', color: '#ffffff' }}>
-                        {member.name}
-                      </h4>
-                      <p style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 600, margin: 0 }}>
-                        {member.role}
+                      <h2 style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', color: '#ffffff', textTransform: 'uppercase' }}>
+                        {activeFolder.name}
+                      </h2>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', margin: 0 }}>
+                        {activeFolder.tagline}
                       </p>
                     </div>
-                  </motion.div>
-                ))}
+
+                    {/* Close Button */}
+                    <button
+                      type="button"
+                      onClick={() => setActiveFolder(null)}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.12)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#ffffff',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                      }}
+                      aria-label="Close Folder"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* Members Grid Inside Folder */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
+                      gap: '1.25rem',
+                    }}
+                  >
+                    {activeFolder.members.map((member) => (
+                      <motion.div
+                        key={member.id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                        className="glass-card"
+                        style={{
+                          padding: '0',
+                          overflow: 'hidden',
+                          borderRadius: '20px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                        }}
+                      >
+                        <div style={{ height: '180px', width: '100%', position: 'relative', overflow: 'hidden' }}>
+                          <img
+                            src={member.image}
+                            alt={member.name}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                          <div style={{ position: 'absolute', top: '0.65rem', left: '0.65rem' }}>
+                            <span className="mono-tag" style={{ background: 'rgba(4, 7, 20, 0.85)', fontSize: '0.62rem' }}>
+                              {member.badge}
+                            </span>
+                          </div>
+                        </div>
+                        <div style={{ padding: '1rem' }}>
+                          <h4 style={{ fontSize: '1.05rem', marginBottom: '0.2rem', color: '#ffffff' }}>
+                            {member.name}
+                          </h4>
+                          <p style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 600, margin: 0 }}>
+                            {member.role}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </section>
   );
 }
