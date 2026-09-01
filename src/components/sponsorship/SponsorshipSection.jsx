@@ -1,6 +1,56 @@
-import { supportersData } from '../../data/supportersData';
+﻿import { supportersData } from '../../data/supportersData';
 import TransmissionForm from './TransmissionForm';
-import { Award, Mail, Globe } from 'lucide-react';
+import { Award, Mail, Globe, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// OSS Hero Stagger animation variants (from motion.dev/examples/vue-hero-stagger)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.14,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 26,
+    filter: 'blur(6px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 260,
+      damping: 24,
+      mass: 0.75,
+    },
+  },
+};
+
+const lineVariants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+    filter: 'blur(6px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 280,
+      damping: 22,
+    },
+  },
+};
 
 export default function SponsorshipSection() {
   return (
@@ -15,33 +65,54 @@ export default function SponsorshipSection() {
       aria-label="Unity Space Sponsorship and Mission Support"
     >
       <div className="container">
-        {/* Section Header */}
-        <div style={{ maxWidth: '800px', marginBottom: '3.5rem' }}>
-          <div className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
+        {/* Staggered Section Header */}
+        <motion.div
+          style={{ maxWidth: '800px', marginBottom: '3.5rem' }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <motion.div variants={itemVariants} className="mono-label" style={{ marginBottom: '1rem', color: 'var(--accent)' }}>
             06 / SUPPORT THE MISSION & ENGAGE
-          </div>
-          <h2 style={{ marginBottom: '1.25rem', textTransform: 'uppercase' }}>
-            HELP US<br />
-            <span className="text-gradient">REACH SPACE.</span>
-          </h2>
-          <p style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          </motion.div>
+          <motion.h2
+            variants={itemVariants}
+            style={{ marginBottom: '1.25rem', textTransform: 'uppercase', overflow: 'hidden' }}
+          >
+            <motion.span variants={lineVariants} style={{ display: 'block' }}>
+              HELP US
+            </motion.span>
+            <motion.span variants={lineVariants} style={{ display: 'block' }} className="text-gradient">
+              REACH SPACE.
+            </motion.span>
+          </motion.h2>
+          <motion.p
+            variants={itemVariants}
+            style={{ fontSize: '1.15rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}
+          >
             Collaborating with Unity Space directly empowers student engineers with the resources, machining tools, and test gear needed to pioneer real aerospace flight systems.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* 2-Column Layout: Left (Support Tiers & Institutional Credit) | Right (Interactive Form) */}
-        <div
+        <motion.div
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '3rem',
             alignItems: 'start',
           }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
         >
           {/* Left Column: Involvement Tiers & Host Institution Card */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* Host Institution Badge Card */}
-            <div
+            <motion.div
+              variants={itemVariants}
               className="glass-panel"
               style={{
                 padding: '1.75rem',
@@ -64,28 +135,37 @@ export default function SponsorshipSection() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
                 {supportersData.institution.description}
               </p>
-            </div>
+            </motion.div>
 
-            {/* Involvement Tiers */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {/* Involvement Tiers (Staggered Children) */}
+            <motion.div
+              variants={containerVariants}
+              style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+            >
               {supportersData.involvementTiers.map((tier, idx) => (
-                <div
+                <motion.div
                   key={idx}
+                  variants={itemVariants}
+                  whileHover={{ y: -4, borderColor: 'var(--accent)', transition: { duration: 0.2 } }}
                   className="glass-card hover-lift"
                   style={{ padding: '1.5rem' }}
                 >
-                  <h4 style={{ fontSize: '1.15rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
-                    {tier.title}
-                  </h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <Sparkles size={14} style={{ color: 'var(--accent)' }} />
+                    <h4 style={{ fontSize: '1.15rem', color: 'var(--text-primary)', margin: 0 }}>
+                      {tier.title}
+                    </h4>
+                  </div>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
                     {tier.pitch}
                   </p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Direct Official Contact Card */}
-            <div
+            <motion.div
+              variants={itemVariants}
               className="glass-panel"
               style={{
                 padding: '1.25rem 1.5rem',
@@ -102,12 +182,14 @@ export default function SponsorshipSection() {
                 </span>
               </div>
               <span className="mono-tag">DIRECT INQUIRIES</span>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Column: Transmission Form */}
-          <TransmissionForm />
-        </div>
+          <motion.div variants={itemVariants}>
+            <TransmissionForm />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

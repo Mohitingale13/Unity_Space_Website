@@ -3,6 +3,55 @@ import { motion } from 'framer-motion';
 import SpacecraftScene from './SpacecraftScene/SpacecraftScene';
 import MagneticButton from './MagneticButton';
 
+// OSS Hero Stagger animation variants (from motion.dev/examples/vue-hero-stagger)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 28,
+    filter: 'blur(8px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 260,
+      damping: 24,
+      mass: 0.75,
+    },
+  },
+};
+
+const lineVariants = {
+  hidden: {
+    opacity: 0,
+    y: 35,
+    filter: 'blur(6px)',
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      type: 'spring',
+      stiffness: 280,
+      damping: 22,
+    },
+  },
+};
+
 export default function Hero() {
   return (
     <section
@@ -27,13 +76,16 @@ export default function Hero() {
             gap: 'clamp(2rem, 5vw, 3.5rem)',
           }}
         >
-          {/* Typographic & Brand Showpiece */}
-          <div style={{ maxWidth: '680px' }}>
-            {/* Mission Identifier Badge */}
+          {/* Staggered Typographic & Brand Showpiece */}
+          <motion.div
+            style={{ maxWidth: '680px' }}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {/* 1. Mission Identifier Badge */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              variants={itemVariants}
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -51,28 +103,30 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            {/* Massive Display Title */}
+            {/* 2. Staggered Multiline Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontSize: 'clamp(2.35rem, 8.5vw, 6rem)',
                 marginBottom: '1.25rem',
                 textTransform: 'uppercase',
                 lineHeight: 1.05,
+                overflow: 'hidden',
               }}
             >
-              TURNING<br />
-              <span className="text-gradient">CURIOSITY</span><br />
-              INTO AEROSPACE.
+              <motion.span variants={lineVariants} style={{ display: 'block' }}>
+                TURNING
+              </motion.span>
+              <motion.span variants={lineVariants} style={{ display: 'block' }} className="text-gradient">
+                CURIOSITY
+              </motion.span>
+              <motion.span variants={lineVariants} style={{ display: 'block' }}>
+                INTO AEROSPACE.
+              </motion.span>
             </motion.h1>
 
-            {/* Sub-headline / Mission Narrative */}
+            {/* 3. Sub-headline / Mission Narrative */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              variants={itemVariants}
               style={{
                 fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
                 color: 'var(--text-secondary)',
@@ -84,11 +138,9 @@ export default function Hero() {
               Pioneering student-led rocketry, flight systems, and multidisciplinary aerospace research from SVPM College of Engineering.
             </motion.p>
 
-            {/* Mobile-Friendly Action Group (Stacked / Flexible on Mobile) */}
+            {/* 4. Action Group */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              variants={itemVariants}
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -108,11 +160,9 @@ export default function Hero() {
               </MagneticButton>
             </motion.div>
 
-            {/* Telemetry Indicator Strip */}
+            {/* 5. Telemetry Indicator Strip */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.45 }}
+              variants={itemVariants}
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -135,13 +185,13 @@ export default function Hero() {
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Host Institution</div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
 
-          {/* Interactive 3D Orbital Scene (Non-blocking touch) */}
+          {/* 6. Interactive 3D Orbital Scene with Spring Entrance */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.88, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
             style={{
               height: 'clamp(280px, 45vw, 520px)',
               position: 'relative',
