@@ -1,4 +1,4 @@
-export default function NebulaGlow() {
+﻿export default function NebulaGlow() {
   return (
     <div
       style={{
@@ -13,33 +13,48 @@ export default function NebulaGlow() {
       }}
       aria-hidden="true"
     >
-      {/* Upper Deep Space Radial Glow */}
+      {/* Upper Deep Celestial Blue Radial Glow */}
       <div
         style={{
           position: 'absolute',
-          top: '-10%',
-          left: '15%',
-          width: '70vw',
-          height: '70vw',
-          maxWidth: '900px',
-          maxHeight: '900px',
+          top: '-15%',
+          left: '12%',
+          width: '80vw',
+          height: '80vw',
+          maxWidth: '1000px',
+          maxHeight: '1000px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(20, 45, 110, 0.22) 0%, rgba(10, 25, 70, 0.08) 50%, transparent 75%)',
+          background: 'radial-gradient(circle, rgba(28, 75, 195, 0.35) 0%, rgba(14, 40, 120, 0.16) 45%, transparent 75%)',
           filter: 'blur(80px)',
         }}
       />
-      {/* Lower Subtle Cosmic Violet Ambient Glow */}
+      {/* Mid Cosmic Blue Ambient Glow */}
       <div
         style={{
           position: 'absolute',
-          bottom: '-5%',
-          right: '5%',
-          width: '60vw',
-          height: '60vw',
-          maxWidth: '800px',
-          maxHeight: '800px',
+          top: '35%',
+          right: '-8%',
+          width: '75vw',
+          height: '75vw',
+          maxWidth: '950px',
+          maxHeight: '950px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(30, 25, 80, 0.16) 0%, rgba(15, 20, 60, 0.05) 50%, transparent 75%)',
+          background: 'radial-gradient(circle, rgba(22, 65, 175, 0.25) 0%, rgba(10, 32, 95, 0.1) 50%, transparent 75%)',
+          filter: 'blur(90px)',
+        }}
+      />
+      {/* Lower Cosmic Blue / Violet Ambient Glow */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '-12%',
+          left: '8%',
+          width: '75vw',
+          height: '75vw',
+          maxWidth: '950px',
+          maxHeight: '950px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(30, 60, 160, 0.26) 0%, rgba(18, 30, 95, 0.1) 50%, transparent 75%)',
           filter: 'blur(90px)',
         }}
       />

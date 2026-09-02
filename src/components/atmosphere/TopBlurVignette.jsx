@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Progressive Top Depth-of-Field Blur Vignette
  * Replicates the United Nations Aerospace progressive blur effect:
  * As content scrolls up into the top header zone, it progressively diffuses,
@@ -43,12 +43,12 @@ export default function TopBlurVignette() {
         }}
       />
 
-      {/* Stage 3: Smooth atmospheric vignette gradient fade */}
+      {/* Stage 3: Smooth atmospheric vignette gradient fade into celestial space blue */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'linear-gradient(to bottom, rgba(8, 9, 13, 0.88) 0%, rgba(8, 9, 13, 0.45) 45%, rgba(8, 9, 13, 0.12) 75%, transparent 100%)',
+          background: 'linear-gradient(to bottom, rgba(4, 8, 26, 0.85) 0%, rgba(4, 8, 26, 0.45) 45%, rgba(4, 8, 26, 0.12) 75%, transparent 100%)',
         }}
       />
     </div>

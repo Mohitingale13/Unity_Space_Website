@@ -11,8 +11,8 @@
 }
 
 html {
-  background-color: #040714 !important;
-  background: #040714;
+  background-color: #030718;
+  background: radial-gradient(ellipse at 50% 20%, #0d1e52 0%, #061136 45%, #020616 100%) fixed;
   color: var(--text-primary);
   scroll-behavior: auto; /* Handled smoothly by Lenis */
   -webkit-font-smoothing: antialiased;
@@ -23,8 +23,8 @@ html {
 }
 
 body {
-  background-color: #040714 !important;
-  background: #040714;
+  background-color: transparent;
+  background: transparent;
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: clip;
@@ -44,7 +44,7 @@ p, h1, h2, h3, h4, span, .text-readable {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background-color: #040714;
+  background: transparent;
 }
 
 /* Form Input Sizing Guardrail: 16px minimum prevents iOS Safari auto-zooming */
@@ -267,3 +267,4 @@ button:active, .btn:active, [role="button"]:active {
     width: clamp(480px, 140vw, 750px) !important;
   }
 }
+
