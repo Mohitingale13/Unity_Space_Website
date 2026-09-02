@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import SpacecraftScene from './SpacecraftScene/SpacecraftScene';
 import MagneticButton from './MagneticButton';
+import HeroEarthBackground from './HeroEarthBackground';
 
 // OSS Hero Stagger animation variants (from motion.dev/examples/vue-hero-stagger)
 const containerVariants = {
@@ -67,6 +68,9 @@ export default function Hero() {
       }}
       aria-label="Unity Space Hero Showcase"
     >
+      {/* Scroll-Driven Scaling & Atmospheric Earth Horizon Background */}
+      <HeroEarthBackground />
+
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <div
           style={{

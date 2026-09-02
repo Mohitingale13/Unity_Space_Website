@@ -253,3 +253,17 @@ button:active, .btn:active, [role="button"]:active {
     display: flex !important;
   }
 }
+
+/* Responsive Earth Background */
+.hero-earth-container {
+  bottom: clamp(-10%, -6vw, -2%);
+  width: clamp(900px, 115vw, 1850px);
+  max-width: 1900px;
+}
+
+@media (max-width: 768px) {
+  .hero-earth-container {
+    bottom: 2% !important;
+    width: clamp(480px, 140vw, 750px) !important;
+  }
+}
