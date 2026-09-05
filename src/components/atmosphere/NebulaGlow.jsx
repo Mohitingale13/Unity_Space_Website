@@ -10,6 +10,10 @@
         pointerEvents: 'none',
         zIndex: 0,
         overflow: 'hidden',
+        background: 'radial-gradient(ellipse at 50% 20%, #0d1e52 0%, #061136 45%, #020616 100%)',
+        WebkitTransform: 'translateZ(0)',
+        transform: 'translateZ(0)',
+        willChange: 'transform',
       }}
       aria-hidden="true"
     >

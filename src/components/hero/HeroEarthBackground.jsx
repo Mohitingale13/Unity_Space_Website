@@ -3,10 +3,9 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 
 /**
  * Scroll-Driven Earth Planet Background
- * - Arches across the bottom of the Hero section.
- * - Mobile-First: Positioned prominently in the first visible screen on mobile.
- * - Features atmospheric blue aurora backlight and curved horizon feathering.
- * - Smoothly scales and fades as user scrolls past the Hero into the Mission section.
+ * - Uncropped: Complete Earth PNG image is fully visible without masks or rectangular cuts.
+ * - Visible on laptop & mobile: Positioned so the complete curvature and atmospheric rim are seen.
+ * - Gentle, extended scroll transitions so the planet remains visible across the Hero and transition.
  */
 export default function HeroEarthBackground() {
   const containerRef = useRef(null);
@@ -25,9 +24,22 @@ export default function HeroEarthBackground() {
   const { scrollY } = useScroll();
 
   // Responsive scroll transforms:
-  const scale = useTransform(scrollY, [0, 450, 800], [1.0, 1.08, 1.18]);
-  const opacity = useTransform(scrollY, [0, 400, 750], [1, 0.65, 0]);
-  const y = useTransform(scrollY, [0, 600], [0, -20]);
+  // Stays 100% visible through Hero scroll, gently dissolving as user moves into Mission
+  const scale = useTransform(
+    scrollY,
+    isMobile ? [0, 500, 1100] : [0, 600, 1300],
+    isMobile ? [1.0, 1.05, 1.14] : [1.0, 1.06, 1.15]
+  );
+  const opacity = useTransform(
+    scrollY,
+    isMobile ? [0, 450, 1100] : [0, 600, 1300],
+    isMobile ? [1, 1, 0] : [1, 0.85, 0]
+  );
+  const y = useTransform(
+    scrollY,
+    isMobile ? [0, 700] : [0, 700],
+    isMobile ? [0, -18] : [0, -22]
+  );
 
   return (
     <div
@@ -38,7 +50,7 @@ export default function HeroEarthBackground() {
         left: 0,
         width: '100%',
         height: '100%',
-        overflow: 'hidden',
+        overflow: 'visible',
         pointerEvents: 'none',
         zIndex: 1,
       }}
@@ -51,8 +63,8 @@ export default function HeroEarthBackground() {
           position: 'absolute',
           left: '50%',
           x: '-50%',
-          bottom: isMobile ? 'clamp(1%, 4vh, 7%)' : 'clamp(-10%, -6vw, -2%)',
-          width: isMobile ? 'clamp(480px, 140vw, 750px)' : 'clamp(950px, 115vw, 1850px)',
+          bottom: isMobile ? 'clamp(4%, 10vh, 18%)' : 'clamp(-8%, -5vw, 0%)',
+          width: isMobile ? 'clamp(500px, 150vw, 820px)' : 'clamp(950px, 115vw, 1850px)',
           maxWidth: '1900px',
           display: 'flex',
           flexDirection: 'column',
@@ -69,27 +81,23 @@ export default function HeroEarthBackground() {
         <div
           style={{
             position: 'absolute',
-            bottom: '24%',
+            bottom: '18%',
             width: '94%',
-            height: '52%',
+            height: '55%',
             borderRadius: '50%',
-            background: 'radial-gradient(ellipse at 50% 85%, rgba(65, 155, 255, 0.5) 0%, rgba(20, 85, 225, 0.25) 50%, transparent 75%)',
-            filter: 'blur(50px)',
+            background: 'radial-gradient(ellipse at 50% 85%, rgba(65, 165, 255, 0.55) 0%, rgba(20, 95, 240, 0.28) 50%, transparent 75%)',
+            filter: isMobile ? 'blur(35px)' : 'blur(50px)',
             pointerEvents: 'none',
             zIndex: 1,
           }}
         />
 
-        {/* High-Resolution Earth Dome with Curved Edge Feathering */}
+        {/* Complete Uncropped Earth PNG Image */}
         <div
           style={{
             position: 'relative',
             width: '100%',
             zIndex: 2,
-            WebkitMaskImage:
-              'radial-gradient(ellipse 98% 88% at 50% 8%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 76%, rgba(0, 0, 0, 0.88) 86%, rgba(0, 0, 0, 0.3) 94%, rgba(0, 0, 0, 0) 100%)',
-            maskImage:
-              'radial-gradient(ellipse 98% 88% at 50% 8%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 76%, rgba(0, 0, 0, 0.88) 86%, rgba(0, 0, 0, 0.3) 94%, rgba(0, 0, 0, 0) 100%)',
           }}
         >
           <img

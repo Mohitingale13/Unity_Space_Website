@@ -11,8 +11,8 @@
 }
 
 html {
-  background-color: #030718;
-  background: radial-gradient(ellipse at 50% 20%, #0d1e52 0%, #061136 45%, #020616 100%) fixed;
+  background-color: #030718 !important;
+  background: #030718 !important;
   color: var(--text-primary);
   scroll-behavior: auto; /* Handled smoothly by Lenis */
   -webkit-font-smoothing: antialiased;
@@ -23,8 +23,8 @@ html {
 }
 
 body {
-  background-color: transparent;
-  background: transparent;
+  background-color: #030718 !important;
+  background: #030718 !important;
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: clip;
@@ -44,7 +44,8 @@ p, h1, h2, h3, h4, span, .text-readable {
   width: 100%;
   min-height: 100vh;
   position: relative;
-  background: transparent;
+  background-color: #030718 !important;
+  background: #030718 !important;
 }
 
 /* Form Input Sizing Guardrail: 16px minimum prevents iOS Safari auto-zooming */
@@ -256,15 +257,15 @@ button:active, .btn:active, [role="button"]:active {
 
 /* Responsive Earth Background */
 .hero-earth-container {
-  bottom: clamp(-10%, -6vw, -2%);
+  bottom: clamp(-8%, -5vw, 0%);
   width: clamp(900px, 115vw, 1850px);
   max-width: 1900px;
 }
 
 @media (max-width: 768px) {
   .hero-earth-container {
-    bottom: 2% !important;
-    width: clamp(480px, 140vw, 750px) !important;
+    bottom: clamp(4%, 10vh, 18%) !important;
+    width: clamp(500px, 150vw, 820px) !important;
   }
 }
 

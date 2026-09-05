@@ -64,7 +64,7 @@ export default function Hero() {
         position: 'relative',
         paddingTop: 'calc(var(--header-height-expanded, 80px) + 0.75rem)',
         paddingBottom: '2rem',
-        overflow: 'hidden',
+        overflow: 'visible',
       }}
       aria-label="Unity Space Hero Showcase"
     >
@@ -115,7 +115,7 @@ export default function Hero() {
                 textTransform: 'uppercase',
                 lineHeight: 1.04,
                 letterSpacing: '-0.02em',
-                overflow: 'hidden',
+                overflow: 'visible',
               }}
             >
               <motion.span variants={lineVariants} style={{ display: 'block' }}>

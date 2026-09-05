@@ -1,13 +1,12 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 
 /**
- * Celestial Deep Space Twinkling Starfield Engine
- * Ultra-delicate tiny pinprick starlight dots:
- * - Micro star sizes (0.25px - 0.75px) for sharp, refined stardust
- * - Individual realistic blinking, breathing, and vanishing cycles
- * - Zero fuzzy glow halos for maximum crispness
- * - Rich star density across deep celestial midnight navy
- * - Tab visibility detection for zero CPU/GPU overhead when unfocused
+ * Celestial Deep Space Starfield Engine
+ * - Calm, curated star density (no overcrowding or disco effect)
+ * - Authentic 4-point diamond star shapes (✦) for twinkling stars (never round circles)
+ * - Ultra-crisp microscopic pinprick dots (0.45px - 0.95px) for calm background stars
+ * - Handful of slow, gentle organic sparkles (12-16 on desktop, 6-8 on mobile)
+ * - Occasional graceful shooting star
  */
 export default function StarfieldCanvas() {
   const canvasRef = useRef(null);
@@ -21,85 +20,98 @@ export default function StarfieldCanvas() {
     let isTabVisible = true;
 
     const isMobile = window.innerWidth < 768;
-    const starCount = isMobile ? 250 : 580;
+    // Curated, calm star quantity (decreased significantly)
+    const starCount = isMobile ? 70 : 140;
 
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Star data collection with ultra-tiny pinprick radii
+    // Star collection:
+    // ~88% are calm, tiny microscopic pinpricks
+    // ~12% are authentic 4-point diamond star sparkles that gently twinkle
     const stars = [];
     for (let i = 0; i < starCount; i++) {
-      const tier = Math.random();
-      let size, maxAlpha, twinkleSpeed, exponent, depth, color;
+      const isSparkleStar = i < (isMobile ? 8 : 16); // Only a handful twinkle
 
-      if (tier < 0.80) {
-        // 80% Ultra-micro starlight dots (0.25px - 0.5px)
-        size = Math.random() * 0.25 + 0.25;
-        maxAlpha = Math.random() * 0.4 + 0.35;
-        twinkleSpeed = Math.random() * 1.5 + 0.6;
-        exponent = 1.6;
-        depth = 0.02;
-      } else if (tier < 0.96) {
-        // 16% Small starlight dots (0.45px - 0.7px)
-        size = Math.random() * 0.25 + 0.45;
-        maxAlpha = Math.random() * 0.35 + 0.55;
-        twinkleSpeed = Math.random() * 1.8 + 0.8;
-        exponent = 1.3;
-        depth = 0.05;
-      } else {
-        // 4% Subtle accent dots (0.7px - 0.9px max)
-        size = Math.random() * 0.2 + 0.7;
+      let size, minAlpha, maxAlpha, twinkleSpeed, exponent, spikeLength, color;
+
+      if (isSparkleStar) {
+        // Authentic 4-point sparkling star (✦)
+        size = Math.random() * 0.4 + 0.8; // Compact 0.8px - 1.2px core
+        spikeLength = Math.random() * 2.2 + 3.2; // 3.2px - 5.4px needle rays
+        minAlpha = Math.random() * 0.15 + 0.1;
         maxAlpha = Math.random() * 0.25 + 0.75;
-        twinkleSpeed = Math.random() * 2.2 + 1.2;
-        exponent = 1.0;
-        depth = 0.1;
+        twinkleSpeed = Math.random() * 1.2 + 0.7; // Slow, majestic breathing
+        exponent = 1.8;
+      } else {
+        // Calm, microscopic pinprick background stars (0.45px - 0.95px)
+        size = Math.random() * 0.5 + 0.45;
+        spikeLength = 0;
+        minAlpha = Math.random() * 0.35 + 0.35;
+        maxAlpha = minAlpha;
+        twinkleSpeed = 0; // Completely steady, no distracting blinking
+        exponent = 1;
       }
 
-      // Star hues: Diamond White, Icy Pale Blue, Soft Warm Gold
+      // Star hues: Diamond White, Soft Cyan, Ice Blue, Starlight Gold
       const hueChoice = Math.random();
-      if (hueChoice < 0.72) {
+      if (hueChoice < 0.55) {
         color = '255, 255, 255';
-      } else if (hueChoice < 0.88) {
-        color = '220, 238, 255';
+      } else if (hueChoice < 0.78) {
+        color = '160, 235, 255';
+      } else if (hueChoice < 0.90) {
+        color = '200, 225, 255';
       } else {
-        color = '255, 248, 230';
+        color = '255, 248, 225';
       }
 
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
         size,
+        spikeLength,
+        isSparkleStar,
+        minAlpha,
         maxAlpha,
         twinkleSpeed,
         exponent,
-        depth,
         color,
         phase: Math.random() * Math.PI * 2,
-        driftSpeedY: (Math.random() - 0.5) * 0.02 - 0.015,
-        driftSpeedX: (Math.random() - 0.5) * 0.01,
-        canRelocate: Math.random() > 0.35,
+        driftSpeedY: (Math.random() - 0.5) * 0.015 - 0.01,
+        driftSpeedX: (Math.random() - 0.5) * 0.008,
       });
     }
 
-    // Shooting stars queue
-    let shootingStar = null;
-    let nextShootingStarTime = 5 + Math.random() * 7;
+    // Helper: Draw authentic 4-point diamond star (✦ shape, not a circle!)
+    const drawDiamondStar = (cx, cy, coreR, spikeLen, color, alpha) => {
+      ctx.fillStyle = `rgba(${color}, ${alpha})`;
 
-    // Mouse parallax tracking (Desktop only)
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetMouseX = 0;
-    let targetMouseY = 0;
+      // Horizontal & vertical needle star points
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - spikeLen);
+      ctx.quadraticCurveTo(cx, cy, cx + coreR, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy + spikeLen);
+      ctx.quadraticCurveTo(cx, cy, cx - coreR, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy - spikeLen);
+      ctx.fill();
 
-    const handlePointerMove = (e) => {
-      if (isMobile) return;
-      targetMouseX = (e.clientX - width / 2) * 0.035;
-      targetMouseY = (e.clientY - height / 2) * 0.035;
+      ctx.beginPath();
+      ctx.moveTo(cx - spikeLen, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy + coreR);
+      ctx.quadraticCurveTo(cx, cy, cx + spikeLen, cy);
+      ctx.quadraticCurveTo(cx, cy, cx, cy - coreR);
+      ctx.quadraticCurveTo(cx, cy, cx - spikeLen, cy);
+      ctx.fill();
+
+      // Subtle bright starlight pinpoint center
+      ctx.beginPath();
+      ctx.arc(cx, cy, coreR * 0.75, 0, Math.PI * 2);
+      ctx.fill();
     };
 
-    if (!isMobile) {
-      window.addEventListener('pointermove', handlePointerMove, { passive: true });
-    }
+    // Shooting stars queue
+    let shootingStar = null;
+    let nextShootingStarTime = 6 + Math.random() * 8;
 
     // Visibility API (Sleep when tab is backgrounded)
     const handleVisibilityChange = () => {
@@ -124,57 +136,45 @@ export default function StarfieldCanvas() {
       lastTimestamp = now;
       totalTime += dt;
 
-      if (!isMobile) {
-        mouseX += (targetMouseX - mouseX) * 0.05;
-        mouseY += (targetMouseY - mouseY) * 0.05;
-      }
-
       ctx.clearRect(0, 0, width, height);
 
-      // Render Starfield as crisp tiny dots
+      // Render Stars
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
 
-        // Micro cosmic drift
+        // Gentle cosmic drift
         star.y += star.driftSpeedY;
         star.x += star.driftSpeedX;
 
-        if (star.y < -10) star.y = height + 10;
-        if (star.y > height + 10) star.y = -10;
-        if (star.x < -10) star.x = width + 10;
-        if (star.x > width + 10) star.x = -10;
+        if (star.y < -15) star.y = height + 15;
+        if (star.y > height + 15) star.y = -15;
+        if (star.x < -15) star.x = width + 15;
+        if (star.x > width + 15) star.x = -15;
 
-        // Vanishing & Blinking formula
-        const wave = Math.sin(totalTime * star.twinkleSpeed + star.phase);
-        
-        let alpha = 0;
-        if (wave > 0) {
-          alpha = Math.pow(wave, star.exponent) * star.maxAlpha;
-        } else if (star.canRelocate && wave < -0.98) {
-          // Relocate star randomly while it is completely vanished
-          star.x = Math.random() * width;
-          star.y = Math.random() * height;
-        }
+        if (star.isSparkleStar) {
+          // Slow, organic diamond star sparkle
+          const wave = (Math.sin(totalTime * star.twinkleSpeed + star.phase) + 1) * 0.5;
+          const alpha = star.minAlpha + Math.pow(wave, star.exponent) * (star.maxAlpha - star.minAlpha);
+          const currentSpike = star.spikeLength * (0.6 + wave * 0.5);
 
-        if (alpha > 0.01) {
-          const renderX = isMobile ? star.x : star.x + mouseX * star.depth;
-          const renderY = isMobile ? star.y : star.y + mouseY * star.depth;
-
-          ctx.fillStyle = `rgba(${star.color}, ${alpha})`;
+          drawDiamondStar(star.x, star.y, star.size, currentSpike, star.color, alpha);
+        } else {
+          // Crisp, steady microscopic pinprick dot (never looks like a big circle)
+          ctx.fillStyle = `rgba(${star.color}, ${star.minAlpha})`;
           ctx.beginPath();
-          ctx.arc(renderX, renderY, star.size, 0, Math.PI * 2);
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
           ctx.fill();
         }
       }
 
-      // Handle subtle shooting stars
+      // Rare, elegant shooting star
       if (!shootingStar && totalTime > nextShootingStarTime) {
         shootingStar = {
           x: Math.random() * (width * 0.8) + width * 0.1,
-          y: Math.random() * (height * 0.4),
-          length: Math.random() * 50 + 40,
-          speed: Math.random() * 400 + 300,
-          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
+          y: Math.random() * (height * 0.35),
+          length: Math.random() * 60 + 40,
+          speed: Math.random() * 450 + 350,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.25,
           progress: 0,
           duration: Math.random() * 0.45 + 0.35,
         };
@@ -186,7 +186,7 @@ export default function StarfieldCanvas() {
 
         if (p >= 1) {
           shootingStar = null;
-          nextShootingStarTime = totalTime + 6 + Math.random() * 9;
+          nextShootingStarTime = totalTime + 7 + Math.random() * 10;
         } else {
           const fade = Math.sin(p * Math.PI);
           const startX = shootingStar.x + Math.cos(shootingStar.angle) * shootingStar.speed * p;
@@ -195,12 +195,12 @@ export default function StarfieldCanvas() {
           const endY = startY - Math.sin(shootingStar.angle) * shootingStar.length * fade;
 
           const grad = ctx.createLinearGradient(startX, startY, endX, endY);
-          grad.addColorStop(0, `rgba(255, 255, 255, ${fade * 0.8})`);
-          grad.addColorStop(0.3, `rgba(180, 220, 255, ${fade * 0.4})`);
-          grad.addColorStop(1, 'rgba(180, 220, 255, 0)');
+          grad.addColorStop(0, `rgba(255, 255, 255, ${fade * 0.9})`);
+          grad.addColorStop(0.3, `rgba(160, 235, 255, ${fade * 0.5})`);
+          grad.addColorStop(1, 'rgba(160, 235, 255, 0)');
 
           ctx.strokeStyle = grad;
-          ctx.lineWidth = 1.0;
+          ctx.lineWidth = 1.1;
           ctx.beginPath();
           ctx.moveTo(startX, startY);
           ctx.lineTo(endX, endY);
@@ -221,7 +221,6 @@ export default function StarfieldCanvas() {
 
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      if (!isMobile) window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
